@@ -18,6 +18,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
+    <!-- MARKDOWN PARSER FOR AI RESPONSES -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
     <style>
         :root {
             /* Keeping original design colors as requested */
@@ -187,6 +190,27 @@
             }
         }
 
+        /* --- AI CHAT STYLES --- */
+        .ai-response-box table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
+        .ai-response-box th { background: rgba(255, 107, 0, 0.2); color: var(--primary); padding: 8px; text-align: left; }
+        .ai-response-box td { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px; }
+        .ai-response-box ul { list-style-type: none; padding: 0; }
+        .ai-response-box li { 
+            background: rgba(255,255,255,0.05); 
+            margin-bottom: 8px; 
+            padding: 10px; 
+            border-left: 3px solid var(--secondary); 
+            font-size: 0.9rem;
+        }
+        .typing-dot {
+            display: inline-block; width: 6px; height: 6px; background: var(--secondary);
+            border-radius: 50%; margin: 0 2px; animation: typing 1s infinite;
+        }
+        @keyframes typing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+        /* Color Palette Swatch */
+        .color-swatch { width: 30px; height: 30px; border-radius: 50%; display: inline-block; border: 2px solid white; vertical-align: middle; margin-right: 8px; }
+
     </style>
 </head>
 <body>
@@ -214,6 +238,7 @@
                     <a href="#home" class="text-sm font-medium text-gray-300 hover:text-orange-500 transition uppercase tracking-widest">Home</a>
                     <a href="#services" class="text-sm font-medium text-gray-300 hover:text-orange-500 transition uppercase tracking-widest">Services</a>
                     <a href="#gallery" class="text-sm font-medium text-gray-300 hover:text-orange-500 transition uppercase tracking-widest">Designs</a>
+                    <a href="#ai-consultant" class="text-sm font-medium text-[#00f2ff] hover:text-white transition uppercase tracking-widest flex items-center gap-1"><i class="fas fa-robot"></i> AI Tools</a>
                     <a href="#contact-zone" class="bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-orange-500 hover:text-white transition">GET QUOTE</a>
                 </div>
             </div>
@@ -320,6 +345,135 @@
                         Transform your space with Modular Kitchens, False Ceilings, and modern electrical planning. We revive old structures.
                     </p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI CONSULTANT SECTION -->
+    <section id="ai-consultant" class="py-24 relative z-10 bg-black/50 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="text-[#00f2ff] text-sm font-bold tracking-widest uppercase mb-2 block"><i class="fas fa-sparkles"></i> Powered by Gemini AI</span>
+                <h2 class="text-4xl font-bold mb-4 text-white">SMART <span class="text-[#00f2ff]">CONSULTANT</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Use our AI tools to estimate costs, plan your timeline, or ask design questions.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Feature 1: Cost Estimator -->
+                <div class="glass-card p-6 rounded-2xl border-t-4 border-[#00f2ff]">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-calculator text-[#00f2ff]"></i> Cost Estimator
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <input type="number" id="ai-area" class="input-field w-full p-2 rounded-lg" placeholder="Area (Sq. Ft)">
+                        <input type="number" id="ai-floors" class="input-field w-full p-2 rounded-lg" value="1" placeholder="Floors">
+                        <select id="ai-quality" class="input-field w-full p-2 rounded-lg">
+                            <option value="Economy">Economy</option>
+                            <option value="Standard" selected>Standard</option>
+                            <option value="Premium">Premium</option>
+                        </select>
+                        <button onclick="generateCostEstimate()" id="btn-estimate" class="w-full py-2 bg-[#00f2ff]/20 text-[#00f2ff] border border-[#00f2ff] rounded-lg font-bold hover:bg-[#00f2ff] hover:text-black transition">
+                            ✨ ESTIMATE
+                        </button>
+                    </div>
+                    <div id="result-estimate" class="mt-4 text-xs text-gray-400 ai-response-box hidden"></div>
+                </div>
+
+                <!-- Feature 2: Project Timeline -->
+                <div class="glass-card p-6 rounded-2xl border-t-4 border-purple-500">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-calendar-alt text-purple-500"></i> AI Scheduler
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <select id="ai-project-type" class="input-field w-full p-2 rounded-lg">
+                            <option value="New House Construction">New House</option>
+                            <option value="Renovation">Renovation</option>
+                        </select>
+                        <input type="date" id="ai-start-date" class="input-field w-full p-2 rounded-lg text-gray-400">
+                        <button onclick="generateSchedule()" id="btn-schedule" class="w-full py-2 bg-purple-500/20 text-purple-400 border border-purple-500 rounded-lg font-bold hover:bg-purple-500 hover:text-white transition">
+                            ✨ CREATE PLAN
+                        </button>
+                    </div>
+                    <div id="result-schedule" class="mt-4 text-xs text-gray-400 ai-response-box hidden max-h-32 overflow-y-auto"></div>
+                </div>
+
+                <!-- Feature 4: Material Advisor -->
+                <div class="glass-card p-6 rounded-2xl border-t-4 border-green-500">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-balance-scale text-green-500"></i> Material Advisor
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <input type="text" id="ai-material-a" class="input-field w-full p-2 rounded-lg" placeholder="e.g. Red Brick">
+                        <input type="text" id="ai-material-b" class="input-field w-full p-2 rounded-lg" placeholder="e.g. Fly Ash">
+                        <button onclick="compareMaterials()" id="btn-compare" class="w-full py-2 bg-green-500/20 text-green-400 border border-green-500 rounded-lg font-bold hover:bg-green-500 hover:text-white transition">
+                            ✨ COMPARE
+                        </button>
+                    </div>
+                    <div id="result-compare" class="mt-4 text-xs text-gray-400 ai-response-box hidden"></div>
+                </div>
+                
+                <!-- Feature 3: Vastu Chat -->
+                <div class="glass-card p-6 rounded-2xl border-t-4 border-orange-500 md:col-span-2">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-comments text-orange-500"></i> Vastu & Design Bot
+                    </h3>
+                    <div class="flex flex-col h-[180px]">
+                        <div id="chat-history" class="flex-grow overflow-y-auto mb-3 space-y-2 p-2 bg-black/30 rounded-lg text-xs text-gray-300">
+                            <div class="text-orange-500"><strong>AI:</strong> Hello! Ask me about Vastu directions or Design ideas.</div>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="chat-input" class="input-field flex-grow p-2 rounded-lg text-sm" placeholder="Ask a question...">
+                            <button onclick="sendChatMessage()" id="btn-chat" class="w-10 h-10 bg-orange-600 rounded-lg text-white hover:bg-orange-500 transition">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Feature 5: Construction Jargon Decoder -->
+                 <div class="glass-card p-6 rounded-2xl border-t-4 border-pink-500">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-book text-pink-500"></i> Jargon Decoder
+                    </h3>
+                    <p class="text-xs text-gray-400 mb-2">Confused by terms like 'Plinth' or 'RCC'?</p>
+                    <div class="flex gap-2">
+                        <input type="text" id="ai-jargon-input" class="input-field flex-grow p-2 rounded-lg text-sm" placeholder="Enter term...">
+                        <button onclick="explainJargon()" id="btn-jargon" class="w-10 h-10 bg-pink-600 rounded-lg text-white hover:bg-pink-500 transition">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div id="result-jargon" class="mt-4 text-xs text-gray-300 ai-response-box hidden p-2 bg-white/5 rounded"></div>
+                </div>
+
+                <!-- Feature 7: AI Interior Stylist (NEW) -->
+                <div class="glass-card p-6 rounded-2xl border-t-4 border-rose-500 md:col-span-2">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-palette text-rose-500"></i> AI Interior Stylist
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <input type="text" id="ai-mood-input" class="input-field w-full p-2 rounded-lg" placeholder="Describe room: e.g. 'Small bedroom, natural light, modern style'">
+                        <button onclick="generateMoodBoard()" id="btn-mood" class="w-full py-2 bg-rose-500/20 text-rose-400 border border-rose-500 rounded-lg font-bold hover:bg-rose-500 hover:text-white transition">
+                            ✨ GENERATE PALETTE
+                        </button>
+                    </div>
+                    <div id="result-mood" class="mt-4 text-xs text-gray-300 ai-response-box hidden"></div>
+                </div>
+
+                <!-- Feature 8: Quality Inspector Checklist (NEW) -->
+                <div class="glass-card p-6 rounded-2xl border-t-4 border-yellow-500">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-clipboard-check text-yellow-500"></i> QC Checklist
+                    </h3>
+                    <p class="text-xs text-gray-400 mb-2">What stage is your site at?</p>
+                    <div class="flex gap-2">
+                        <input type="text" id="ai-stage-input" class="input-field flex-grow p-2 rounded-lg text-sm" placeholder="e.g. Roof Casting">
+                        <button onclick="generateChecklist()" id="btn-checklist" class="w-10 h-10 bg-yellow-600 rounded-lg text-white hover:bg-yellow-500 transition">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                    </div>
+                    <div id="result-checklist" class="mt-4 text-xs text-gray-300 ai-response-box hidden max-h-32 overflow-y-auto"></div>
+                </div>
+
             </div>
         </div>
     </section>
@@ -483,7 +637,14 @@
                             <option class="bg-black">Renovation</option>
                             <option class="bg-black">Modular Kitchen</option>
                         </select>
-                        <textarea name="message" placeholder="Your requirements..." class="input-field w-full p-4 rounded-xl h-32"></textarea>
+                        
+                        <!-- Feature 6: Magic Compose -->
+                        <div class="relative">
+                            <textarea id="msg-area" name="message" placeholder="Type your rough requirements here (e.g. 'need 3 bedroom house low budget')..." class="input-field w-full p-4 rounded-xl h-32"></textarea>
+                            <button type="button" onclick="magicDraft()" id="btn-magic" class="absolute top-2 right-2 bg-[#00f2ff]/20 text-[#00f2ff] text-xs px-3 py-1 rounded-full border border-[#00f2ff] hover:bg-[#00f2ff] hover:text-black transition flex items-center gap-1">
+                                <i class="fas fa-wand-magic-sparkles"></i> AI Draft
+                            </button>
+                        </div>
                         
                         <button type="submit" id="send-btn" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl text-white font-bold shadow-lg hover:shadow-blue-500/30 transition transform hover:-translate-y-1">
                             SEND ENQUIRY <i class="fas fa-arrow-right ml-2"></i>
@@ -732,6 +893,225 @@
                 }
             });
         }
+
+        /* ==========================================
+           ✨ GEMINI AI INTEGRATION ✨
+           ========================================== */
+        const apiKey = ""; // Will be provided by environment
+        
+        async function callGemini(prompt) {
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                console.error('AI Error:', error);
+                return "I'm currently offline. Please try again later.";
+            }
+        }
+
+        // Feature 1: Cost Estimator
+        async function generateCostEstimate() {
+            const btn = document.getElementById('btn-estimate');
+            const resultBox = document.getElementById('result-estimate');
+            const area = document.getElementById('ai-area').value;
+            const floors = document.getElementById('ai-floors').value;
+            const quality = document.getElementById('ai-quality').value;
+
+            if (!area) { alert("Please enter plot area."); return; }
+
+            btn.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span> Calculating...';
+            resultBox.classList.remove('hidden');
+            resultBox.innerHTML = "Analyzing market rates in Bihar...";
+
+            const prompt = `You are an expert Civil Engineer in India (Bihar region). Create a concise construction cost estimate for a house with: Area: ${area} sq ft, Floors: ${floors}, Quality: ${quality}. 
+            Provide a breakdown in a simple HTML table format (no markdown code blocks, just <table>...</table>) with columns: 'Item' and 'Cost (INR)'. 
+            Include items like Material, Labor, and Total. Keep it brief.`;
+
+            const aiResponse = await callGemini(prompt);
+            
+            // Clean up response if it includes markdown code fences
+            let cleanHtml = aiResponse.replace(/```html/g, '').replace(/```/g, '');
+            
+            resultBox.innerHTML = cleanHtml;
+            btn.innerHTML = '✨ ESTIMATE';
+        }
+
+        // Feature 2: Project Scheduler
+        async function generateSchedule() {
+            const btn = document.getElementById('btn-schedule');
+            const resultBox = document.getElementById('result-schedule');
+            const type = document.getElementById('ai-project-type').value;
+            const start = document.getElementById('ai-start-date').value;
+
+            if (!start) { alert("Please select a start date."); return; }
+
+            btn.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span> Planning...';
+            resultBox.classList.remove('hidden');
+            resultBox.innerHTML = "Generating timeline...";
+
+            const prompt = `You are a Construction Manager. Generate a high-level construction timeline for a '${type}' project starting on '${start}'. 
+            Break it down into 4-5 major phases (e.g., Foundation, Structure, Finishing, Handover) with estimated dates. 
+            Return ONLY HTML: a <ul> list where each <li> contains the <strong>Phase Name</strong> and the Date Range. Do not add any intro text.`;
+
+            const aiResponse = await callGemini(prompt);
+            let cleanHtml = aiResponse.replace(/```html/g, '').replace(/```/g, '');
+            
+            resultBox.innerHTML = cleanHtml;
+            btn.innerHTML = '✨ CREATE PLAN';
+        }
+
+        // Feature 3: Vastu Chat
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const history = document.getElementById('chat-history');
+            const btn = document.getElementById('btn-chat');
+            const msg = input.value;
+
+            if (!msg) return;
+
+            // Add User Message
+            history.innerHTML += `
+                <div class="text-right mb-2">
+                    <span class="bg-orange-900/30 px-2 py-1 rounded text-orange-200">You: ${msg}</span>
+                </div>
+            `;
+            input.value = '';
+            history.scrollTop = history.scrollHeight;
+
+            // Loading State
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            const prompt = `You are 'Apna Ghar AI', a friendly construction expert. Answer this query in under 30 words: '${msg}'.`;
+
+            const aiResponse = await callGemini(prompt);
+
+            // Add AI Message
+            history.innerHTML += `
+                <div class="text-left mb-2">
+                    <span class="text-[#00f2ff]"><strong>AI:</strong> ${marked.parse(aiResponse)}</span>
+                </div>
+            `;
+            history.scrollTop = history.scrollHeight;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+        }
+
+        // Feature 4: Material Advisor
+        async function compareMaterials() {
+            const btn = document.getElementById('btn-compare');
+            const resultBox = document.getElementById('result-compare');
+            const matA = document.getElementById('ai-material-a').value;
+            const matB = document.getElementById('ai-material-b').value;
+
+            if (!matA || !matB) { alert("Please enter two materials to compare."); return; }
+
+            btn.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span> Comparing...';
+            resultBox.classList.remove('hidden');
+            resultBox.innerHTML = "Consulting database...";
+
+            const prompt = `Compare '${matA}' vs '${matB}' for building construction in Bihar, India. 
+            Create a comparison table with columns: 'Feature', '${matA}', and '${matB}'. 
+            Rows should include: Durability, Cost (Relative), and Suitability. 
+            Return ONLY HTML table (<table>...</table>). No intro text.`;
+
+            const aiResponse = await callGemini(prompt);
+            let cleanHtml = aiResponse.replace(/```html/g, '').replace(/```/g, '');
+            
+            resultBox.innerHTML = cleanHtml;
+            btn.innerHTML = '✨ COMPARE';
+        }
+
+        // Feature 5: Construction Jargon Decoder
+        async function explainJargon() {
+            const btn = document.getElementById('btn-jargon');
+            const resultBox = document.getElementById('result-jargon');
+            const term = document.getElementById('ai-jargon-input').value;
+
+            if (!term) return;
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            resultBox.classList.remove('hidden');
+            
+            const prompt = `Explain the construction term '${term}' in 1 simple sentence for a client in Bihar, India. Use a mix of Hindi/English if helpful.`;
+            
+            const aiResponse = await callGemini(prompt);
+            resultBox.innerHTML = `<strong>${term}:</strong> ${aiResponse}`;
+            btn.innerHTML = '<i class="fas fa-search"></i>';
+        }
+
+        // Feature 6: Magic Contact Drafter
+        async function magicDraft() {
+            const btn = document.getElementById('btn-magic');
+            const area = document.getElementById('msg-area');
+            const roughText = area.value;
+
+            if (!roughText) { alert("Please type some rough notes first!"); return; }
+
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '✨ Writing...';
+            
+            const prompt = `Rewrite these rough client notes into a professional, polite construction enquiry message addressed to 'Apna Ghar Team': "${roughText}". Keep it concise.`;
+            
+            const aiResponse = await callGemini(prompt);
+            area.value = aiResponse;
+            btn.innerHTML = '✨ Done!';
+            setTimeout(() => btn.innerHTML = originalIcon, 2000);
+        }
+
+        // Feature 7: AI Interior Stylist (NEW)
+        async function generateMoodBoard() {
+            const btn = document.getElementById('btn-mood');
+            const resultBox = document.getElementById('result-mood');
+            const desc = document.getElementById('ai-mood-input').value;
+
+            if (!desc) { alert("Please describe your room."); return; }
+
+            btn.innerHTML = '<span class="typing-dot"></span> Designing...';
+            resultBox.classList.remove('hidden');
+
+            const prompt = `You are an Interior Designer. A client describes a room: "${desc}". 
+            Provide:
+            1. A 3-color palette with Hex Codes.
+            2. A 1-sentence vibe description.
+            
+            Format as HTML:
+            <div class="mb-2"><span class="color-swatch" style="background-color: HEX1"></span> <span class="color-swatch" style="background-color: HEX2"></span> <span class="color-swatch" style="background-color: HEX3"></span></div>
+            <p class="italic">"Vibe description..."</p>
+            `;
+
+            const aiResponse = await callGemini(prompt);
+            let cleanHtml = aiResponse.replace(/```html/g, '').replace(/```/g, '');
+            resultBox.innerHTML = cleanHtml;
+            btn.innerHTML = '✨ GENERATE PALETTE';
+        }
+
+        // Feature 8: Quality Inspector Checklist (NEW)
+        async function generateChecklist() {
+            const btn = document.getElementById('btn-checklist');
+            const resultBox = document.getElementById('result-checklist');
+            const stage = document.getElementById('ai-stage-input').value;
+
+            if (!stage) { alert("Please enter construction stage."); return; }
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            resultBox.classList.remove('hidden');
+
+            const prompt = `Generate a strict 5-point quality inspection checklist for a house construction client at the '${stage}' stage. 
+            Focus on preventing mistakes. 
+            Return only a simple HTML <ul> list.`;
+
+            const aiResponse = await callGemini(prompt);
+            let cleanHtml = aiResponse.replace(/```html/g, '').replace(/```/g, '');
+            resultBox.innerHTML = cleanHtml;
+            btn.innerHTML = '<i class="fas fa-list-ol"></i>';
+        }
+
     </script>
 </body>
 </html>
