@@ -7,6 +7,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- FONTS & ICONS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;800&family=Outfit:wght@300;400;600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -72,17 +73,16 @@
             -webkit-box-reflect: below 5px linear-gradient(transparent, transparent, rgba(0,0,0,0.3));
         }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-        @media (max-width: 768px) {
-            .gallery-viewport { height: 300px; perspective: 800px; }
-            .gallery-item { width: 160px; height: 110px; margin-left: -80px; margin-top: -55px; }
-        }
+        @media (max-width: 768px) { .gallery-viewport { height: 300px; perspective: 800px; } .gallery-item { width: 160px; height: 110px; margin-left: -80px; margin-top: -55px; } }
 
+        /* Lightbox */
         .lightbox { position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; }
         .lightbox.open { opacity: 1; pointer-events: all; }
         .lightbox img { max-width: 95%; max-height: 95%; border: 2px solid var(--primary); transform: scale(0.9); transition: 0.3s; }
         .lightbox.open img { transform: scale(1); }
         .lightbox-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; }
 
+        /* AI Styles */
         .ai-response-box table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
         .ai-response-box th { background: rgba(255, 107, 0, 0.2); color: var(--primary); padding: 5px; text-align: left; }
         .ai-response-box td { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 5px; }
@@ -91,6 +91,20 @@
 </head>
 <body>
     <div class="loader-overlay" id="loader"><h2 class="text-3xl font-bold tracking-[0.3em] text-white">APNA GHAR CONSTRUCTION</h2><div class="loader-bar"><div class="loader-progress"></div></div></div>
+
+    <!-- KEY RECOVERY MODAL -->
+    <div class="modal-overlay" id="key-modal">
+        <div class="glass-card lead-form p-8 rounded-2xl border-t-4 border-red-500">
+            <h3 class="text-2xl font-bold text-white mb-2">⚠️ API KEY ISSUE</h3>
+            <p class="text-gray-400 text-sm mb-6">The AI Key is invalid or expired. Please paste your Google Gemini Key below to fix it permanently.</p>
+            <form id="key-form" class="space-y-4">
+                <input type="text" id="manual-api-key" placeholder="Paste Key (AIza...)" class="input-field w-full p-3 rounded-lg" required>
+                <button type="submit" class="w-full py-3 bg-red-600 rounded-lg text-white font-bold hover:bg-red-500 transition">SAVE & FIX</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- LEAD MODAL -->
     <div class="modal-overlay" id="lead-modal">
         <div class="glass-card lead-form p-8 rounded-2xl border-t-4 border-[#00f2ff]">
             <h3 class="text-2xl font-bold text-white mb-2">UNLOCK AI TOOLS ✨</h3>
@@ -103,7 +117,10 @@
             </form>
         </div>
     </div>
+
     <div id="canvas-top"></div>
+    
+    <!-- NAV -->
     <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-lg border-b border-white/5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
@@ -121,6 +138,8 @@
             </div>
         </div>
     </nav>
+
+    <!-- HERO -->
     <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 relative z-10 w-full grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -131,6 +150,8 @@
             </div>
         </div>
     </section>
+
+    <!-- GALLERY -->
     <section id="gallery" class="relative bg-black overflow-hidden border-y border-white/10">
         <div class="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-black to-transparent z-10 pointer-events-none"></div>
         <div class="relative z-20 text-center pt-10 pb-4 pointer-events-none"><h2 class="text-4xl font-bold text-white tracking-widest">OUR <span class="text-[#00f2ff]">GOLD</span> STANDARD</h2><p class="text-gray-400 text-sm mt-2">Swipe to Rotate • Click to Zoom</p></div>
@@ -138,6 +159,8 @@
         <div class="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none"></div>
     </section>
     <div class="lightbox" id="lightbox"><span class="lightbox-close" onclick="closeLightbox()">&times;</span><img id="lightbox-img" src="" alt="Full View"></div>
+
+    <!-- SERVICES -->
     <section id="services" class="py-24 relative z-10 bg-black/20">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-16"><h2 class="text-4xl font-bold mb-4 text-white">CORE <span class="text-orange-500">COMPETENCIES</span></h2><div class="w-20 h-1 bg-gradient-to-r from-orange-500 to-transparent mx-auto"></div></div>
@@ -148,6 +171,8 @@
             </div>
         </div>
     </section>
+
+    <!-- FUTURE -->
     <section id="future" class="py-24 relative overflow-hidden bg-[#050505] border-y border-white/5">
         <div class="max-w-7xl mx-auto px-4 relative z-10">
             <div class="grid md:grid-cols-2 gap-16 items-center">
@@ -156,6 +181,8 @@
             </div>
         </div>
     </section>
+
+    <!-- AI CONSULTANT -->
     <section id="ai-consultant" class="py-24 relative z-10 bg-black/50 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-16"><span class="text-[#00f2ff] text-sm font-bold tracking-widest uppercase mb-2 block"><i class="fas fa-sparkles"></i> Powered by Gemini AI</span><h2 class="text-4xl font-bold mb-4 text-white">SMART <span class="text-[#00f2ff]">CONSULTANT</span></h2><p class="text-gray-400 max-w-2xl mx-auto">Unlock these tools by providing your contact info.</p></div>
@@ -168,6 +195,8 @@
             </div>
         </div>
     </section>
+
+    <!-- CONTACT -->
     <div id="contact-zone" class="relative w-full min-h-screen flex flex-col justify-between bg-[#050505] border-t border-white/10 overflow-hidden">
         <div id="canvas-bottom"></div>
         <div class="relative z-20 w-full max-w-7xl mx-auto px-4 py-20 flex-grow flex items-center">
@@ -179,71 +208,49 @@
     </div>
 
     <script>
-        /* --- 1. EMAIL JS INIT (YOUR KEYS) --- */
-        (function() {
-            emailjs.init("JzFLkksbZNqethvDF"); // Public Key
-        })();
-
+        /* --- 1. EMAIL JS --- */
+        (function() { emailjs.init("JzFLkksbZNqethvDF"); })();
         const SERVICE_ID = "service_d5404dw";
-        const TEMPLATE_ID = "template_rg6sr9f"; // CORRECT TEMPLATE ID (VERIFIED)
+        const TEMPLATE_ID = "template_rg6sr9f"; 
 
-        /* --- 2. DATA COLLECTION --- */
-        let isAccessGranted = false;
+        /* --- 2. LOGIC --- */
+        let isAccessGranted = !!localStorage.getItem('apnaGharUser');
         const leadModal = document.getElementById('lead-modal');
-        if(localStorage.getItem('apnaGharUser')) isAccessGranted = true;
+        const keyModal = document.getElementById('key-modal');
+
+        // KEY MANAGEMENT
+        let apiKey = localStorage.getItem('apnaGharKey') || "AIzaSyC1vltz_2VMj9kzLX3n5vNe4XNnlkUL7Ug"; // CORRECTED TYPO HERE
 
         function checkAccess() {
-            if (!isAccessGranted) {
-                leadModal.classList.add('active');
-                event.stopImmediatePropagation();
-                return false;
-            }
+            if (!isAccessGranted) { leadModal.classList.add('active'); event.stopImmediatePropagation(); return false; }
             return true;
         }
 
+        document.getElementById('key-form').addEventListener('submit', (e) => {
+            e.preventDefault(); const newKey = document.getElementById('manual-api-key').value.trim();
+            if(newKey.length > 20) { localStorage.setItem('apnaGharKey', newKey); apiKey = newKey; keyModal.classList.remove('active'); alert("Key Saved! Try the AI tool again."); }
+        });
+
         document.getElementById('lead-form-inner').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('lead-submit-btn');
-            const originalText = btn.innerText;
-            btn.innerText = 'SAVING...';
+            e.preventDefault(); const btn = document.getElementById('lead-submit-btn'); const originalText = btn.innerText; btn.innerText = 'SAVING...';
             const params = { user_name: document.getElementById('lead-name').value, user_phone: document.getElementById('lead-phone').value, user_email: document.getElementById('lead-email').value, source: "AI Tool Access" };
-            emailjs.send(SERVICE_ID, TEMPLATE_ID, params).then(() => {
-                localStorage.setItem('apnaGharUser', JSON.stringify(params));
-                isAccessGranted = true;
-                leadModal.classList.remove('active');
-                alert("✨ Access Granted!");
-            }, (err) => {
-                alert("Email Error: " + JSON.stringify(err));
-                btn.innerText = originalText;
-            });
+            emailjs.send(SERVICE_ID, TEMPLATE_ID, params).then(() => { localStorage.setItem('apnaGharUser', JSON.stringify(params)); isAccessGranted = true; leadModal.classList.remove('active'); alert("✨ Access Granted!"); }, (err) => { alert("Email Error: " + JSON.stringify(err)); btn.innerText = originalText; });
         });
 
         document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('send-btn');
-            const originalText = btn.innerText;
-            btn.innerText = 'SENDING...';
+            e.preventDefault(); const btn = document.getElementById('send-btn'); const originalText = btn.innerText; btn.innerText = 'SENDING...';
             const params = { user_name: document.getElementById('form-name').value, user_phone: document.getElementById('form-phone').value, message: document.getElementById('msg-area').value, source: "Contact Form" };
-            emailjs.send(SERVICE_ID, TEMPLATE_ID, params).then(() => {
-                btn.innerHTML = 'SENT ✔';
-                btn.style.background = '#10B981';
-                setTimeout(() => { document.getElementById('contact-form').reset(); btn.innerText = originalText; btn.style.background = ''; }, 3000);
-            }, (err) => {
-                alert("Email Error: " + JSON.stringify(err));
-                btn.innerText = originalText;
-            });
+            emailjs.send(SERVICE_ID, TEMPLATE_ID, params).then(() => { btn.innerHTML = 'SENT ✔'; btn.style.background = '#10B981'; setTimeout(() => { document.getElementById('contact-form').reset(); btn.innerText = originalText; btn.style.background = ''; }, 3000); }, (err) => { alert("Email Error: " + JSON.stringify(err)); btn.innerText = originalText; });
         });
 
-        /* --- 3. GALLERY LOGIC --- */
+        /* --- 3. GALLERY --- */
         const galleryImages = ["https://ayushbiki.github.io/Apna-Ghar-Construction/1.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/2.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/3.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/4.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/5.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/6.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/7.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/8.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/9.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/10.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/11.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/12.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/13.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/14.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/15.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/16.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/17.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/18.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/19.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/20.jpg"];
         let radius = 0, currentAngle = 0, targetAngle = 0, isDragging = false, startX = 0, lastX = 0;
         function initGallery() {
             const ring = document.getElementById('gallery-ring'); const viewport = document.getElementById('gallery-viewport'); if(!ring) return;
             const isMobile = window.innerWidth < 768; const widthItem = isMobile ? 180 : 260; const count = galleryImages.length; radius = Math.round((count * widthItem) / (2 * Math.PI)) - 30;
             ring.innerHTML = '';
-            galleryImages.forEach((imgUrl, index) => {
-                const div = document.createElement('div'); div.className = 'gallery-item'; div.style.transform = `rotateY(${index * (360/count)}deg) translateZ(${radius}px)`; div.onclick = () => openLightbox(imgUrl); div.innerHTML = `<img src="${imgUrl}" alt="Design ${index+1}">`; ring.appendChild(div);
-            });
+            galleryImages.forEach((imgUrl, index) => { const div = document.createElement('div'); div.className = 'gallery-item'; div.style.transform = `rotateY(${index * (360/count)}deg) translateZ(${radius}px)`; div.onclick = () => openLightbox(imgUrl); div.innerHTML = `<img src="${imgUrl}" alt="Design ${index+1}">`; ring.appendChild(div); });
             ring.style.transform = `translateZ(-${radius}px) rotateY(0deg)`;
             const start = (x) => { isDragging = true; startX = x; lastX = x; ring.classList.add('interacting'); };
             const move = (x) => { if(!isDragging) return; const d = x - lastX; lastX = x; targetAngle += d * 0.15; };
@@ -254,62 +261,49 @@
         function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('open'); }
         function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
 
-        /* --- 4. BACKGROUNDS --- */
+        /* --- 4. BACKGROUNDS & AI --- */
         window.addEventListener('load', () => { gsap.to('#loader', { opacity: 0, duration: 0.5, delay: 1.5, onComplete: () => document.getElementById('loader').style.display = 'none' }); initTerrainCanvas(); initRealisticSpace(); initGallery(); initTypewriter(); });
         function initTypewriter() { const el = document.getElementById('typing-text'); const words = ["DREAM HOMES", "FUTURE CITIES", "APNA GHAR"]; let i=0, j=0, isDel=false; function type() { el.textContent = words[i].substring(0, j + (isDel ? -1 : 1)); j += isDel ? -1 : 1; if (!isDel && j === words[i].length) { isDel=true; setTimeout(type, 2000); } else if (isDel && j === 0) { isDel=false; i=(i+1)%words.length; setTimeout(type, 500); } else setTimeout(type, isDel ? 50 : 100); } type(); }
         function initTerrainCanvas() { const c = document.getElementById('canvas-top'); const s = new THREE.Scene(); s.fog = new THREE.FogExp2(0x000000, 0.02); const cam = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000); const r = new THREE.WebGLRenderer({ alpha: true, antialias: true }); r.setSize(window.innerWidth, window.innerHeight); c.appendChild(r.domElement); const g = new THREE.BufferGeometry(); const pos = new Float32Array(1200*3); let k=0; for(let x=-40;x<40;x+=2)for(let z=-40;z<40;z+=2){if(k<3600){pos[k]=x;pos[k+1]=0;pos[k+2]=z;k+=3;}} g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); const m = new THREE.PointsMaterial({ color: 0xff6b00, size: 0.15 }); const p = new THREE.Points(g, m); s.add(p); cam.position.set(0,10,20); cam.lookAt(0,0,0); let t=0; function a(){ requestAnimationFrame(a); t+=0.02; const pa=p.geometry.attributes.position.array; for(let i=0;i<pa.length;i+=3) pa[i+1]=Math.sin(pa[i]*0.2+t)*2+Math.cos(pa[i+2]*0.2+t)*2; p.geometry.attributes.position.needsUpdate=true; r.render(s,cam); } a(); }
         function initRealisticSpace() { const c = document.getElementById('canvas-bottom'); const s = new THREE.Scene(); const cam = new THREE.PerspectiveCamera(75, c.clientWidth/c.clientHeight, 0.1, 1000); const r = new THREE.WebGLRenderer({ alpha: true, antialias: true }); r.setSize(c.clientWidth, c.clientHeight); c.appendChild(r.domElement); const canvas = document.createElement('canvas'); canvas.width = 32; canvas.height = 32; const ctx = canvas.getContext('2d'); const grad = ctx.createRadialGradient(16,16,0,16,16,16); grad.addColorStop(0, 'rgba(255,255,255,1)'); grad.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = grad; ctx.fillRect(0,0,32,32); const starTexture = new THREE.Texture(canvas); starTexture.needsUpdate = true; const g1 = new THREE.BufferGeometry(); const p1 = new Float32Array(4000*3); for(let i=0;i<12000;i++) p1[i]=(Math.random()-0.5)*600; g1.setAttribute('position', new THREE.BufferAttribute(p1, 3)); const stars = new THREE.Points(g1, new THREE.PointsMaterial({color:0xaaaaaa, size:0.8, map: starTexture, transparent:true, opacity:0.8, depthWrite: false})); s.add(stars); const g2 = new THREE.BufferGeometry(); const p2 = []; const c2 = []; const colors = [new THREE.Color(0xffffff), new THREE.Color(0xffddaa), new THREE.Color(0xaaddff)]; for(let i=0; i<200; i++) { p2.push((Math.random()-0.5)*300, (Math.random()-0.5)*200, (Math.random()-0.5)*100 + 50); const col = colors[Math.floor(Math.random()*colors.length)]; c2.push(col.r, col.g, col.b); } g2.setAttribute('position', new THREE.Float32BufferAttribute(p2, 3)); g2.setAttribute('color', new THREE.Float32BufferAttribute(c2, 3)); const fgStars = new THREE.Points(g2, new THREE.PointsMaterial({size:3.5, map: starTexture, vertexColors:true, transparent:true, opacity:0.9, blending:THREE.AdditiveBlending, depthWrite: false})); s.add(fgStars); cam.position.z=100; let t=0; function a(){ requestAnimationFrame(a); t+=0.0005; stars.rotation.y=t*0.2; fgStars.rotation.y=t*0.8; r.render(s,cam); } a(); }
 
-        /* --- 5. AI (GEMINI - NEW KEY) --- */
-        // REPLACED WITH YOUR NEWEST KEY
-        const apiKey = "AIzaSyC1vItz_2VMj9kzLX3n5vNe4XNnIkUL7Ug";
-
         async function callGemini(prompt) {
             if(!checkAccess()) return; 
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                // AUTO-SWITCH: Try Flash first, then Pro
+                let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
-                const d = await res.json();
-                if(d.error) return "API Error: " + d.error.message;
+                let d = await res.json();
+                
+                // If Flash fails, try Pro
+                if(d.error) {
+                    console.warn("Flash failed, switching to Pro...");
+                    res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+                        method: 'POST', headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    });
+                    d = await res.json();
+                }
+
+                if(d.error) {
+                    if(d.error.message.includes("API key not valid")) {
+                        keyModal.classList.add('active'); 
+                        return "Error: Key Invalid. Please paste new key in popup.";
+                    }
+                    return "API Error: " + d.error.message;
+                }
                 return d.candidates[0].content.parts[0].text;
             } catch(e) { return "Offline mode. Check internet."; }
         }
 
-        async function generateCostEstimate() {
-            const btn=document.getElementById('btn-estimate'); btn.innerHTML='...';
-            const res = await callGemini(`Estimate cost for house in Bihar: Area ${document.getElementById('ai-area').value} sqft. HTML Table.`);
-            document.getElementById('result-estimate').innerHTML = res.replace(/```html|```/g, ''); document.getElementById('result-estimate').classList.remove('hidden'); btn.innerHTML='✨ ESTIMATE';
-        }
-        async function generateSchedule() {
-            const btn=document.getElementById('btn-schedule'); btn.innerHTML='...';
-            const res = await callGemini(`Construction timeline starting ${document.getElementById('ai-start-date').value}. HTML list of 5 phases.`);
-            document.getElementById('result-schedule').innerHTML = res.replace(/```html|```/g, ''); document.getElementById('result-schedule').classList.remove('hidden'); btn.innerHTML='✨ PLAN';
-        }
-        async function compareMaterials() {
-            const btn=document.getElementById('btn-compare'); btn.innerHTML='...';
-            const res = await callGemini(`Compare ${document.getElementById('ai-material-a').value} vs ${document.getElementById('ai-material-b').value} for Bihar. HTML Table.`);
-            document.getElementById('result-compare').innerHTML = res.replace(/```html|```/g, ''); document.getElementById('result-compare').classList.remove('hidden'); btn.innerHTML='✨ COMPARE';
-        }
-        async function sendChatMessage() {
-            const inp = document.getElementById('chat-input'); const hist = document.getElementById('chat-history'); if(!inp.value) return;
-            hist.innerHTML += `<div class="text-right mb-2"><span class="bg-orange-900/30 px-2 py-1 rounded text-orange-200">You: ${inp.value}</span></div>`;
-            const res = await callGemini(`Answer as Apna Ghar AI in <30 words: ${inp.value}`);
-            hist.innerHTML += `<div class="text-left mb-2"><span class="text-[#00f2ff]"><strong>AI:</strong> ${marked.parse(res)}</span></div>`; inp.value='';
-        }
-        async function explainJargon() {
-            const btn=document.getElementById('btn-jargon'); btn.innerHTML='...'; const t=document.getElementById('ai-jargon-input').value;
-            const res = await callGemini(`Explain '${t}' simply in 1 sentence.`);
-            document.getElementById('result-jargon').innerHTML = `<strong>${t}:</strong> ${res}`; document.getElementById('result-jargon').classList.remove('hidden'); btn.innerHTML='<i class="fas fa-search"></i>';
-        }
-        async function magicDraft() {
-             const area = document.getElementById('msg-area'); if(!area.value) return;
-             const btn = document.getElementById('btn-magic'); btn.innerHTML='...';
-             const txt = await callGemini(`Rewrite professionally for construction enquiry: "${area.value}"`);
-             area.value = txt; btn.innerHTML='✨ Done';
-        }
+        async function generateCostEstimate() { const btn=document.getElementById('btn-estimate'); btn.innerHTML='...'; const res = await callGemini(`Estimate cost for house in Bihar: Area ${document.getElementById('ai-area').value} sqft. HTML Table.`); document.getElementById('result-estimate').innerHTML = res.replace(/```html|```/g, ''); document.getElementById('result-estimate').classList.remove('hidden'); btn.innerHTML='✨ ESTIMATE'; }
+        async function generateSchedule() { const btn=document.getElementById('btn-schedule'); btn.innerHTML='...'; const res = await callGemini(`Construction timeline starting ${document.getElementById('ai-start-date').value}. HTML list of 5 phases.`); document.getElementById('result-schedule').innerHTML = res.replace(/```html|```/g, ''); document.getElementById('result-schedule').classList.remove('hidden'); btn.innerHTML='✨ PLAN'; }
+        async function compareMaterials() { const btn=document.getElementById('btn-compare'); btn.innerHTML='...'; const res = await callGemini(`Compare ${document.getElementById('ai-material-a').value} vs ${document.getElementById('ai-material-b').value} for Bihar. HTML Table.`); document.getElementById('result-compare').innerHTML = res.replace(/```html|```/g, ''); document.getElementById('result-compare').classList.remove('hidden'); btn.innerHTML='✨ COMPARE'; }
+        async function sendChatMessage() { const inp = document.getElementById('chat-input'); const hist = document.getElementById('chat-history'); if(!inp.value) return; hist.innerHTML += `<div class="text-right mb-2"><span class="bg-orange-900/30 px-2 py-1 rounded text-orange-200">You: ${inp.value}</span></div>`; const res = await callGemini(`Answer as Apna Ghar AI in <30 words: ${inp.value}`); hist.innerHTML += `<div class="text-left mb-2"><span class="text-[#00f2ff]"><strong>AI:</strong> ${marked.parse(res)}</span></div>`; inp.value=''; }
+        async function explainJargon() { const btn=document.getElementById('btn-jargon'); btn.innerHTML='...'; const t=document.getElementById('ai-jargon-input').value; const res = await callGemini(`Explain '${t}' simply in 1 sentence.`); document.getElementById('result-jargon').innerHTML = `<strong>${t}:</strong> ${res}`; document.getElementById('result-jargon').classList.remove('hidden'); btn.innerHTML='<i class="fas fa-search"></i>'; }
+        async function magicDraft() { const area = document.getElementById('msg-area'); if(!area.value) return; const btn = document.getElementById('btn-magic'); btn.innerHTML='...'; const txt = await callGemini(`Rewrite professionally for construction enquiry: "${area.value}"`); area.value = txt; btn.innerHTML='✨ Done'; }
     </script>
 </body>
 </html>
-
