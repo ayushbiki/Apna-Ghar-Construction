@@ -7,7 +7,6 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;800&family=Outfit:wght@300;400;600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -343,14 +342,13 @@
     </div>
 
     <script>
-        /* --- 1. EMAIL JS INIT --- */
+        /* --- 1. EMAIL JS INIT (YOUR KEYS) --- */
         (function() {
-            // YOUR PUBLIC KEY (PASTED!)
             emailjs.init("JzFLkksbZNqethvDF"); 
         })();
 
         const SERVICE_ID = "service_d5404dw";
-        const TEMPLATE_ID = "template_contact_form"; // <-- YOU MUST CREATE THIS IN EMAILJS!
+        const TEMPLATE_ID = "template_rg6sr9f"; // CORRECT TEMPLATE ID FROM SCREENSHOT
 
         /* --- 2. DATA COLLECTION --- */
         let isAccessGranted = false;
@@ -387,7 +385,7 @@
                     leadModal.classList.remove('active');
                     alert("✨ Access Granted!");
                 }, (err) => {
-                    alert("Error: Please check internet or template ID.");
+                    alert("Error: " + JSON.stringify(err));
                     btn.innerHTML = 'UNLOCK ACCESS';
                 });
         });
@@ -411,7 +409,7 @@
                     btn.style.background = '#10B981';
                     document.getElementById('contact-form').reset();
                 }, (err) => {
-                     alert("Failed to send. Please check template ID.");
+                     alert("Failed to send: " + JSON.stringify(err));
                      btn.innerHTML = 'SEND ENQUIRY';
                 });
         });
@@ -607,7 +605,6 @@
         }
 
         /* --- 5. AI (RESTRICTED KEY) --- */
-        // YOUR ACTUAL KEY YOU PROVIDED
         const apiKey = "AIzaSyDjJTCZp-grQumpNkw6FvyroGUmu3KTv0M";
 
         async function callGemini(prompt) {
