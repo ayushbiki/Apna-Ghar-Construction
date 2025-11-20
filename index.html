@@ -342,13 +342,15 @@
     </div>
 
     <script>
-        /* --- 1. EMAIL JS INIT (YOUR KEYS) --- */
+        /* --- 1. EMAIL JS INIT --- */
         (function() {
+            // YOUR PUBLIC KEY
             emailjs.init("JzFLkksbZNqethvDF"); 
         })();
 
         const SERVICE_ID = "service_d5404dw";
-        const TEMPLATE_ID = "template_rg6sr9f"; // CORRECT TEMPLATE ID FROM SCREENSHOT
+        // UPDATED WITH YOUR SCREENSHOT ID
+        const TEMPLATE_ID = "template_rg6sr9f"; 
 
         /* --- 2. DATA COLLECTION --- */
         let isAccessGranted = false;
@@ -604,8 +606,9 @@
             } a();
         }
 
-        /* --- 5. AI (RESTRICTED KEY) --- */
-        const apiKey = "AIzaSyDjJTCZp-grQumpNkw6FvyroGUmu3KTv0M";
+        /* --- 5. AI (NEWEST KEY) --- */
+        // UPDATED TO YOUR NEW KEY
+        const apiKey = "AIzaSyC1vltz_2VMj9kzLX3n5vNe4XNnlkUL7Ug";
 
         async function callGemini(prompt) {
             if(!checkAccess()) return; // Gatekeeper
