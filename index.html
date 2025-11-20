@@ -112,9 +112,9 @@
             <h3 class="text-2xl font-bold text-white mb-2">UNLOCK AI TOOLS ✨</h3>
             <p class="text-gray-400 text-sm mb-6">Enter details to access Cost Estimator & Designs.</p>
             <form id="lead-form-inner" class="space-y-4">
-                <input type="text" id="lead-name" placeholder="Your Name" class="input-field w-full p-3 rounded-lg" required>
-                <input type="tel" id="lead-phone" placeholder="Phone Number" class="input-field w-full p-3 rounded-lg" required>
-                <input type="email" id="lead-email" placeholder="Email ID" class="input-field w-full p-3 rounded-lg">
+                <input type="text" id="lead-name" name="user_name" placeholder="Your Name" class="input-field w-full p-3 rounded-lg" required>
+                <input type="tel" id="lead-phone" name="user_phone" placeholder="Phone Number" class="input-field w-full p-3 rounded-lg" required>
+                <input type="email" id="lead-email" name="user_email" placeholder="Email ID" class="input-field w-full p-3 rounded-lg">
                 <button type="submit" id="lead-submit-btn" class="w-full py-3 bg-gradient-to-r from-[#00f2ff] to-blue-600 rounded-lg text-black font-bold hover:shadow-[0_0_20px_#00f2ff] transition">
                     UNLOCK ACCESS <i class="fas fa-lock-open ml-2"></i>
                 </button>
@@ -217,7 +217,7 @@
         </div>
     </section>
 
-    <!-- FUTURE READY -->
+    <!-- FUTURE READY (RESTORED) -->
     <section id="future" class="py-24 relative overflow-hidden bg-[#050505] border-y border-white/5">
         <div class="max-w-7xl mx-auto px-4 relative z-10">
             <div class="grid md:grid-cols-2 gap-16 items-center">
@@ -238,6 +238,7 @@
                     <h2 class="text-5xl font-bold text-white mb-6">NEXT GEN <span class="text-[#00f2ff]" style="text-shadow: 0 0 20px #00f2ff">ENGINEERING</span></h2>
                     <ul class="space-y-4 text-gray-300">
                         <li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Smart Tracking & Laser Layouts</li>
+                        <li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Precision Layouts</li>
                         <li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Er. Kishor Kunal (Mob: 6260407385)</li>
                         <li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Er. Anuj Choudhary (Mob: 9113170550)</li>
                         <li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Er. Ayush Kumar (Mob: 9234244735)</li>
@@ -344,16 +345,17 @@
     <script>
         /* --- 1. EMAIL JS INIT --- */
         (function() {
+            // YOUR PUBLIC KEY (PASTED!)
             emailjs.init("JzFLkksbZNqethvDF"); 
         })();
 
-        // YOUR SPECIFIC KEYS
         const SERVICE_ID = "service_d5404dw";
-        const TEMPLATE_ID = "template_contact_form"; // <--- ACTION REQUIRED: CREATE A TEMPLATE WITH THIS ID
+        const TEMPLATE_ID = "template_contact_form"; // <-- YOU MUST CREATE THIS IN EMAILJS!
 
         /* --- 2. DATA COLLECTION --- */
         let isAccessGranted = false;
         const leadModal = document.getElementById('lead-modal');
+        
         if(localStorage.getItem('apnaGharUser')) isAccessGranted = true;
 
         function checkAccess() {
@@ -365,18 +367,17 @@
             return true;
         }
 
-        // Send Lead Data
+        // Lead Form -> EmailJS
         document.getElementById('lead-form-inner').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('lead-submit-btn');
-            const originalText = btn.innerText;
-            btn.innerText = 'SAVING...';
+            btn.innerHTML = 'SAVING...';
 
             const params = {
                 user_name: document.getElementById('lead-name').value,
                 user_phone: document.getElementById('lead-phone').value,
                 user_email: document.getElementById('lead-email').value,
-                source: "Unlock AI Tool"
+                source: "AI Tool Access"
             };
 
             emailjs.send(SERVICE_ID, TEMPLATE_ID, params)
@@ -386,44 +387,37 @@
                     leadModal.classList.remove('active');
                     alert("✨ Access Granted!");
                 }, (err) => {
-                    console.error(err);
-                    alert("Connection failed. Please create EmailJS template 'template_contact_form'.");
-                    btn.innerText = originalText;
+                    alert("Error: Please check internet or template ID.");
+                    btn.innerHTML = 'UNLOCK ACCESS';
                 });
         });
 
-        // Send Quote Data
+        // Quote Form -> EmailJS
         document.getElementById('contact-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('send-btn');
-            const originalText = btn.innerText;
-            btn.innerText = 'SENDING...';
+            btn.innerHTML = 'SENDING...';
 
             const params = {
                 user_name: document.getElementById('form-name').value,
                 user_phone: document.getElementById('form-phone').value,
                 message: document.getElementById('msg-area').value,
-                source: "Quote Form"
+                source: "Contact Form"
             };
 
             emailjs.send(SERVICE_ID, TEMPLATE_ID, params)
                 .then(() => {
                     btn.innerHTML = 'SENT ✔';
                     btn.style.background = '#10B981';
-                    setTimeout(() => {
-                        document.getElementById('contact-form').reset();
-                        btn.innerText = originalText;
-                        btn.style.background = '';
-                    }, 3000);
+                    document.getElementById('contact-form').reset();
                 }, (err) => {
-                    console.error(err);
-                    alert("Failed to send. Check Template ID.");
-                    btn.innerText = originalText;
+                     alert("Failed to send. Please check template ID.");
+                     btn.innerHTML = 'SEND ENQUIRY';
                 });
         });
 
 
-        /* --- 3. GALLERY LOGIC --- */
+        /* --- 3. GALLERY LOGIC (Optimized & Aesthetic) --- */
         const galleryImages = [
             "https://ayushbiki.github.io/Apna-Ghar-Construction/1.jpg",
             "https://ayushbiki.github.io/Apna-Ghar-Construction/2.jpg",
@@ -454,10 +448,11 @@
             const viewport = document.getElementById('gallery-viewport');
             if(!ring) return;
 
+            // Tighter spacing for aesthetics
             const isMobile = window.innerWidth < 768;
-            const widthItem = isMobile ? 180 : 260; // Tighter
+            const widthItem = isMobile ? 200 : 280; 
             const count = galleryImages.length;
-            radius = Math.round((count * widthItem) / (2 * Math.PI)) - 30;
+            radius = Math.round((count * widthItem) / (2 * Math.PI)) - (isMobile ? 50 : 0);
 
             ring.innerHTML = '';
             galleryImages.forEach((imgUrl, index) => {
@@ -470,8 +465,9 @@
             });
             ring.style.transform = `translateZ(-${radius}px) rotateY(0deg)`;
 
+            // Events for touch/drag
             const start = (x) => { isDragging = true; startX = x; lastX = x; ring.classList.add('interacting'); };
-            const move = (x) => { if(!isDragging) return; const d = x - lastX; lastX = x; targetAngle += d * 0.15; }; // Slower drag
+            const move = (x) => { if(!isDragging) return; const d = x - lastX; lastX = x; targetAngle += d * 0.4; }; // Slower drag
             const end = () => { isDragging = false; ring.classList.remove('interacting'); };
 
             viewport.addEventListener('mousedown', e => start(e.clientX));
@@ -480,21 +476,23 @@
             window.addEventListener('touchmove', e => move(e.touches[0].clientX));
             window.addEventListener('mouseup', end);
             window.addEventListener('touchend', end);
+
             animateGallery();
         }
 
         function animateGallery() {
-            if (!isDragging) targetAngle -= 0.02; // Very Slow Auto Spin
-            currentAngle += (targetAngle - currentAngle) * 0.05; 
+            if (!isDragging) targetAngle -= 0.05; // Slower auto-rotation
+            currentAngle += (targetAngle - currentAngle) * 0.08; // Smoother inertia
             const ring = document.getElementById('gallery-ring');
             if (ring) ring.style.transform = `translateZ(-${radius}px) rotateY(${currentAngle}deg)`;
             requestAnimationFrame(animateGallery);
         }
+
         function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('open'); }
         function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
 
 
-        /* --- 4. BACKGROUNDS --- */
+        /* --- 4. CANVAS BACKGROUNDS (Restored Stars + New Foreground) --- */
         window.addEventListener('load', () => {
             gsap.to('#loader', { opacity: 0, duration: 0.5, delay: 1.5, onComplete: () => document.getElementById('loader').style.display = 'none' });
             initTerrainCanvas(); initRealisticSpace(); initGallery(); initTypewriter();
@@ -527,78 +525,131 @@
         }
 
         function initRealisticSpace() {
-            const c = document.getElementById('canvas-bottom'); const s = new THREE.Scene();
+            const c = document.getElementById('canvas-bottom'); 
+            const s = new THREE.Scene();
             const cam = new THREE.PerspectiveCamera(75, c.clientWidth/c.clientHeight, 0.1, 1000);
             const r = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             r.setSize(c.clientWidth, c.clientHeight); c.appendChild(r.domElement);
             
-            const canvas = document.createElement('canvas'); canvas.width = 32; canvas.height = 32;
+            // 1. Background Stars (Faraway) - White/Grey - Using Circular Texture
+            const canvas = document.createElement('canvas');
+            canvas.width = 32; canvas.height = 32;
             const ctx = canvas.getContext('2d');
             const grad = ctx.createRadialGradient(16,16,0,16,16,16);
-            grad.addColorStop(0, 'rgba(255,255,255,1)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
+            grad.addColorStop(0, 'rgba(255,255,255,1)');
+            grad.addColorStop(0.2, 'rgba(255,255,255,0.8)');
+            grad.addColorStop(0.5, 'rgba(255,255,255,0.2)');
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = grad; ctx.fillRect(0,0,32,32);
-            const starTexture = new THREE.Texture(canvas); starTexture.needsUpdate = true;
+            const starTexture = new THREE.Texture(canvas);
+            starTexture.needsUpdate = true;
 
             const g1 = new THREE.BufferGeometry(); const p1 = new Float32Array(4000*3);
             for(let i=0;i<12000;i++) p1[i]=(Math.random()-0.5)*600;
             g1.setAttribute('position', new THREE.BufferAttribute(p1, 3));
-            const stars = new THREE.Points(g1, new THREE.PointsMaterial({color:0xaaaaaa, size:0.8, map: starTexture, transparent:true, opacity:0.8, depthWrite: false})); s.add(stars);
+            const stars = new THREE.Points(g1, new THREE.PointsMaterial({
+                color:0xaaaaaa, 
+                size:0.8, 
+                map: starTexture, // Circular texture
+                transparent:true, 
+                opacity:0.8,
+                depthWrite: false
+            })); s.add(stars);
             
-            const g2 = new THREE.BufferGeometry(); const p2 = []; const c2 = [];
-            const colors = [new THREE.Color(0xffffff), new THREE.Color(0xffddaa), new THREE.Color(0xaaddff)];
+            // 2. Foreground Stars (Colorful & Large - NEW!)
+            const g2 = new THREE.BufferGeometry();
+            const p2 = []; const c2 = [];
+            const colors = [new THREE.Color(0xffffff), new THREE.Color(0xffddaa), new THREE.Color(0xaaddff), new THREE.Color(0xffaa88)]; // Star colors
             for(let i=0; i<200; i++) {
-                p2.push((Math.random()-0.5)*300, (Math.random()-0.5)*200, (Math.random()-0.5)*100 + 50);
+                p2.push((Math.random()-0.5)*300, (Math.random()-0.5)*200, (Math.random()-0.5)*100 + 50); // Closer Z
                 const col = colors[Math.floor(Math.random()*colors.length)];
                 c2.push(col.r, col.g, col.b);
             }
             g2.setAttribute('position', new THREE.Float32BufferAttribute(p2, 3));
             g2.setAttribute('color', new THREE.Float32BufferAttribute(c2, 3));
-            const fgStars = new THREE.Points(g2, new THREE.PointsMaterial({size:3.5, map: starTexture, vertexColors:true, transparent:true, opacity:0.9, blending:THREE.AdditiveBlending, depthWrite: false})); s.add(fgStars);
+            const fgMat = new THREE.PointsMaterial({
+                size:3.5, // Larger for foreground
+                map: starTexture, // Circular texture
+                vertexColors:true, 
+                transparent:true, 
+                opacity:0.9, 
+                blending:THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            const fgStars = new THREE.Points(g2, fgMat); s.add(fgStars);
 
+            // 3. Rare Supernovas (Big Glows)
+            const g3 = new THREE.BufferGeometry();
+            const p3 = []; 
+            for(let i=0; i<5; i++) p3.push((Math.random()-0.5)*250, (Math.random()-0.5)*150, (Math.random()-0.5)*50 + 60);
+            g3.setAttribute('position', new THREE.Float32BufferAttribute(p3, 3));
+            const novaMat = new THREE.PointsMaterial({
+                color:0xffcc00, 
+                size:12.0, // Very large glow
+                map: starTexture, // Circular texture
+                transparent:true, 
+                opacity:0.5, 
+                blending:THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            const novas = new THREE.Points(g3, novaMat); s.add(novas);
+            
             cam.position.z=100; let t=0; 
-            function a(){ requestAnimationFrame(a); t+=0.0005; stars.rotation.y=t*0.2; fgStars.rotation.y=t*0.8; r.render(s,cam); } a();
+            function a(){ 
+                requestAnimationFrame(a); t+=0.0005; 
+                stars.rotation.y=t*0.2; // Slow background
+                fgStars.rotation.y=t*0.8; // Fast foreground (Parallax)
+                novas.rotation.y=t*0.6;
+                // Twinkle effect
+                fgMat.opacity = 0.7 + Math.sin(t*10)*0.3;
+                r.render(s,cam); 
+            } a();
         }
 
-        /* --- 5. AI (GEMINI) --- */
-        const apiKey = "AIzaSyDjJTCZp-grQumpNkw6FvyroGUmu3KTv0M"; 
+        /* --- 5. AI (RESTRICTED KEY) --- */
+        // YOUR ACTUAL KEY YOU PROVIDED
+        const apiKey = "AIzaSyDjJTCZp-grQumpNkw6FvyroGUmu3KTv0M";
 
         async function callGemini(prompt) {
-            if(!checkAccess()) return; 
+            if(!checkAccess()) return; // Gatekeeper
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
-                const d = await res.json();
-                if(d.error) return "API Error: " + d.error.message;
-                return d.candidates[0].content.parts[0].text;
-            } catch(e) { return "Connection Error. Please try again."; }
+                const d = await res.json(); return d.candidates[0].content.parts[0].text;
+            } catch(e) { return "Offline mode."; }
         }
 
+        // AI Wrappers
         async function generateCostEstimate() {
             const btn=document.getElementById('btn-estimate'); btn.innerHTML='...';
             const res = await callGemini(`Estimate cost for house in Bihar: Area ${document.getElementById('ai-area').value} sqft. HTML Table.`);
             document.getElementById('result-estimate').innerHTML = res.replace(/```html|```/g, ''); 
             document.getElementById('result-estimate').classList.remove('hidden'); btn.innerHTML='✨ ESTIMATE';
         }
+        
         async function generateSchedule() {
             const btn=document.getElementById('btn-schedule'); btn.innerHTML='...';
             const res = await callGemini(`Construction timeline starting ${document.getElementById('ai-start-date').value}. HTML list of 5 phases.`);
             document.getElementById('result-schedule').innerHTML = res.replace(/```html|```/g, '');
             document.getElementById('result-schedule').classList.remove('hidden'); btn.innerHTML='✨ PLAN';
         }
+        
         async function compareMaterials() {
             const btn=document.getElementById('btn-compare'); btn.innerHTML='...';
             const res = await callGemini(`Compare ${document.getElementById('ai-material-a').value} vs ${document.getElementById('ai-material-b').value} for Bihar. HTML Table.`);
             document.getElementById('result-compare').innerHTML = res.replace(/```html|```/g, '');
             document.getElementById('result-compare').classList.remove('hidden'); btn.innerHTML='✨ COMPARE';
         }
+        
         async function sendChatMessage() {
             const inp = document.getElementById('chat-input'); const hist = document.getElementById('chat-history');
             if(!inp.value) return; hist.innerHTML += `<div class="text-right mb-2"><span class="bg-orange-900/30 px-2 py-1 rounded text-orange-200">You: ${inp.value}</span></div>`;
             const res = await callGemini(`Answer as Apna Ghar AI in <30 words: ${inp.value}`);
             hist.innerHTML += `<div class="text-left mb-2"><span class="text-[#00f2ff]"><strong>AI:</strong> ${marked.parse(res)}</span></div>`; inp.value='';
         }
+        
         async function explainJargon() {
             const btn=document.getElementById('btn-jargon'); btn.innerHTML='...';
             const t=document.getElementById('ai-jargon-input').value;
@@ -606,12 +657,14 @@
             document.getElementById('result-jargon').innerHTML = `<strong>${t}:</strong> ${res}`;
             document.getElementById('result-jargon').classList.remove('hidden'); btn.innerHTML='<i class="fas fa-search"></i>';
         }
+        
         async function magicDraft() {
              const area = document.getElementById('msg-area'); if(!area.value) return;
              const btn = document.getElementById('btn-magic'); btn.innerHTML='...';
              const txt = await callGemini(`Rewrite professionally for construction enquiry: "${area.value}"`);
              area.value = txt; btn.innerHTML='✨ Done';
         }
+
     </script>
 </body>
 </html>
