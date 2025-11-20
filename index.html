@@ -7,7 +7,6 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;800&family=Outfit:wght@300;400;600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -32,7 +31,6 @@
         .input-field { background: rgba(0,0,0,0.6); border: 1px solid #333; color: white; transition: 0.3s; }
         .input-field:focus { border-color: var(--secondary); outline: none; box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
         .gradient-text { background: linear-gradient(135deg, #fff 0%, #999 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .gradient-orange { background: linear-gradient(135deg, #ff6b00 0%, #ff0055 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .social-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; transition: 0.3s; background: white; }
         .social-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(255,255,255,0.5); }
@@ -58,14 +56,23 @@
         .gallery-viewport:active { cursor: grabbing; }
         .gallery-ring { position: absolute; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
         .gallery-ring.interacting .gallery-item { box-shadow: 0 0 30px var(--secondary); border-color: var(--secondary); }
-        .gallery-item { position: absolute; top: 50%; left: 50%; width: 240px; height: 170px; margin-left: -120px; margin-top: -85px; background: rgba(255,255,255,0.05); border: 1px solid rgba(0, 242, 255, 0.3); border-radius: 8px; overflow: hidden; transform-style: preserve-3d; transition: 0.3s; -webkit-box-reflect: below 5px linear-gradient(transparent, transparent, rgba(0,0,0,0.3)); }
+        .gallery-item {
+            position: absolute; top: 50%; left: 50%;
+            width: 240px; height: 170px; margin-left: -120px; margin-top: -85px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(0, 242, 255, 0.3);
+            border-radius: 8px; overflow: hidden;
+            transform-style: preserve-3d; transition: 0.3s;
+            -webkit-box-reflect: below 5px linear-gradient(transparent, transparent, rgba(0,0,0,0.3));
+        }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
         @media (max-width: 768px) { .gallery-viewport { height: 300px; perspective: 800px; } .gallery-item { width: 160px; height: 110px; margin-left: -80px; margin-top: -55px; } }
+
         .lightbox { position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; }
         .lightbox.open { opacity: 1; pointer-events: all; }
         .lightbox img { max-width: 95%; max-height: 95%; border: 2px solid var(--primary); transform: scale(0.9); transition: 0.3s; }
         .lightbox.open img { transform: scale(1); }
         .lightbox-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; }
+
         .ai-response-box table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
         .ai-response-box th { background: rgba(255, 107, 0, 0.2); color: var(--primary); padding: 5px; text-align: left; }
         .ai-response-box td { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 5px; }
@@ -78,11 +85,11 @@
     <!-- KEY RECOVERY MODAL -->
     <div class="modal-overlay" id="key-modal">
         <div class="glass-card lead-form p-8 rounded-2xl border-t-4 border-red-500">
-            <h3 class="text-2xl font-bold text-white mb-2">⚠️ API KEY ISSUE</h3>
-            <p class="text-gray-400 text-sm mb-6">The AI Key is invalid. Please paste your Google Gemini Key below to fix it.</p>
+            <h3 class="text-2xl font-bold text-white mb-2">⚠️ ACTIVATION REQUIRED</h3>
+            <p class="text-gray-400 text-sm mb-6">To enable AI features securely, please enter your Google API Key once. It will be saved locally on your device.</p>
             <form id="key-form" class="space-y-4">
-                <input type="text" id="manual-api-key" placeholder="Paste Key (AIza...)" class="input-field w-full p-3 rounded-lg" required>
-                <button type="submit" class="w-full py-3 bg-red-600 rounded-lg text-white font-bold hover:bg-red-500 transition">SAVE & FIX</button>
+                <input type="text" id="manual-api-key" placeholder="Paste AIza... Key Here" class="input-field w-full p-3 rounded-lg" required>
+                <button type="submit" class="w-full py-3 bg-red-600 rounded-lg text-white font-bold hover:bg-red-500 transition">ACTIVATE AI</button>
             </form>
         </div>
     </div>
@@ -171,6 +178,7 @@
             </div>
         </div>
     </section>
+
     <div id="contact-zone" class="relative w-full min-h-screen flex flex-col justify-between bg-[#050505] border-t border-white/10 overflow-hidden">
         <div id="canvas-bottom"></div>
         <div class="relative z-20 w-full max-w-7xl mx-auto px-4 py-20 flex-grow flex items-center">
@@ -182,26 +190,22 @@
     </div>
 
     <script>
-        /* --- 1. EMAIL JS CONFIG --- */
-        (function() {
-            emailjs.init("JzFLkksbZNqethvDF"); 
-        })();
-
+        /* --- 1. EMAIL JS --- */
+        (function() { emailjs.init("JzFLkksbZNqethvDF"); })();
         const SERVICE_ID = "service_d5404dw";
         const TEMPLATE_ID = "template_rg6sr9f"; 
 
-        /* --- 2. KEY MANAGEMENT --- */
-        let isAccessGranted = false;
+        /* --- 2. KEY MGMT --- */
+        let isAccessGranted = !!localStorage.getItem('apnaGharUser');
         const leadModal = document.getElementById('lead-modal');
         const keyModal = document.getElementById('key-modal');
-        
-        if(localStorage.getItem('apnaGharUser')) isAccessGranted = true;
 
-        // UPDATED KEY FROM SCREENSHOT
-        let apiKey = localStorage.getItem('apnaGharKey') || "AIzaSyC1vltz_2VMj9kzLX3n5vNe4XNnlkUL7Ug";
+        // PLACEHOLDER FOR KEY (Prevents GitHub Revocation)
+        let apiKey = localStorage.getItem('apnaGharKey') || ""; 
 
         function checkAccess() {
             if (!isAccessGranted) { leadModal.classList.add('active'); event.stopImmediatePropagation(); return false; }
+            if (!apiKey || apiKey.length < 20) { keyModal.classList.add('active'); event.stopImmediatePropagation(); return false; }
             return true;
         }
 
@@ -211,15 +215,15 @@
         });
 
         document.getElementById('lead-form-inner').addEventListener('submit', function(e) {
-            e.preventDefault(); const btn = document.getElementById('lead-submit-btn'); btn.innerHTML = 'SAVING...';
+            e.preventDefault(); const btn = document.getElementById('lead-submit-btn'); btn.innerText = 'SAVING...';
             const params = { user_name: document.getElementById('lead-name').value, user_phone: document.getElementById('lead-phone').value, user_email: document.getElementById('lead-email').value, source: "AI Tool Access" };
-            emailjs.send(SERVICE_ID, TEMPLATE_ID, params).then(() => { localStorage.setItem('apnaGharUser', JSON.stringify(params)); isAccessGranted = true; leadModal.classList.remove('active'); alert("✨ Access Granted!"); }, (err) => { alert("Email Error: " + JSON.stringify(err)); btn.innerHTML = 'UNLOCK ACCESS'; });
+            emailjs.send(SERVICE_ID, TEMPLATE_ID, params).then(() => { localStorage.setItem('apnaGharUser', JSON.stringify(params)); isAccessGranted = true; leadModal.classList.remove('active'); alert("✨ Access Granted!"); }, (err) => { alert("Email Error: " + JSON.stringify(err)); btn.innerText = 'UNLOCK ACCESS'; });
         });
 
         document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault(); const btn = document.getElementById('send-btn'); btn.innerHTML = 'SENDING...';
+            e.preventDefault(); const btn = document.getElementById('send-btn'); btn.innerText = 'SENDING...';
             const params = { user_name: document.getElementById('form-name').value, user_phone: document.getElementById('form-phone').value, message: document.getElementById('msg-area').value, source: "Contact Form" };
-            emailjs.send(SERVICE_ID, TEMPLATE_ID, params).then(() => { btn.innerHTML = 'SENT ✔'; btn.style.background = '#10B981'; setTimeout(() => { document.getElementById('contact-form').reset(); btn.innerHTML = "SEND ENQUIRY"; btn.style.background = ''; }, 3000); }, (err) => { alert("Email Error: " + JSON.stringify(err)); btn.innerHTML = 'SEND ENQUIRY'; });
+            emailjs.send(SERVICE_ID, TEMPLATE_ID, params).then(() => { btn.innerHTML = 'SENT ✔'; btn.style.background = '#10B981'; setTimeout(() => { document.getElementById('contact-form').reset(); btn.innerText = "SEND ENQUIRY"; btn.style.background = ''; }, 3000); }, (err) => { alert("Email Error: " + JSON.stringify(err)); btn.innerText = 'SEND ENQUIRY'; });
         });
 
         /* --- 3. GALLERY --- */
@@ -235,18 +239,32 @@
         function initTerrainCanvas() { const c=document.getElementById('canvas-top'), s=new THREE.Scene(), cam=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000), r=new THREE.WebGLRenderer({alpha:true,antialias:true}); r.setSize(window.innerWidth,window.innerHeight); c.appendChild(r.domElement); const g=new THREE.BufferGeometry(), pos=new Float32Array(3600); for(let k=0,x=-40;x<40;x+=2)for(let z=-40;z<40;z+=2){if(k<3600){pos[k]=x;pos[k+1]=0;pos[k+2]=z;k+=3;}} g.setAttribute('position',new THREE.BufferAttribute(pos,3)); s.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xff6b00,size:0.15}))); cam.position.set(0,10,20); cam.lookAt(0,0,0); function a(){requestAnimationFrame(a); r.render(s,cam);} a(); }
         function initRealisticSpace() { const c=document.getElementById('canvas-bottom'), s=new THREE.Scene(), cam=new THREE.PerspectiveCamera(75,c.clientWidth/c.clientHeight,0.1,1000), r=new THREE.WebGLRenderer({alpha:true,antialias:true}); r.setSize(c.clientWidth,c.clientHeight); c.appendChild(r.domElement); const canvas=document.createElement('canvas');canvas.width=32;canvas.height=32;const ctx=canvas.getContext('2d');const grad=ctx.createRadialGradient(16,16,0,16,16,16);grad.addColorStop(0,'rgba(255,255,255,1)');grad.addColorStop(0.2,'rgba(255,255,255,0.8)');grad.addColorStop(0.5,'rgba(255,255,255,0.2)');grad.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=grad;ctx.fillRect(0,0,32,32);const starTexture=new THREE.Texture(canvas);starTexture.needsUpdate=true; const g1=new THREE.BufferGeometry(), p1=new Float32Array(4000*3); for(let i=0;i<12000;i++)p1[i]=(Math.random()-0.5)*600; g1.setAttribute('position',new THREE.BufferAttribute(p1,3)); s.add(new THREE.Points(g1,new THREE.PointsMaterial({color:0xaaaaaa,size:0.8,map:starTexture,transparent:true,opacity:0.8,depthWrite:false}))); const g2=new THREE.BufferGeometry(), p2=[], c2=[]; const colors=[new THREE.Color(0xffffff),new THREE.Color(0xffddaa),new THREE.Color(0xaaddff),new THREE.Color(0xffaa88)]; for(let i=0;i<200;i++){p2.push((Math.random()-0.5)*300,(Math.random()-0.5)*200,(Math.random()-0.5)*100+50); const col=colors[Math.floor(Math.random()*colors.length)]; c2.push(col.r,col.g,col.b);} g2.setAttribute('position',new THREE.Float32BufferAttribute(p2,3)); g2.setAttribute('color',new THREE.Float32BufferAttribute(c2,3)); s.add(new THREE.Points(g2,new THREE.PointsMaterial({size:3.5,map:starTexture,vertexColors:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false}))); const g3=new THREE.BufferGeometry(), p3=[]; for(let i=0;i<5;i++)p3.push((Math.random()-0.5)*250,(Math.random()-0.5)*150,(Math.random()-0.5)*50+60); g3.setAttribute('position',new THREE.Float32BufferAttribute(p3,3)); s.add(new THREE.Points(g3,new THREE.PointsMaterial({color:0xffcc00,size:12.0,map:starTexture,transparent:true,opacity:0.5,blending:THREE.AdditiveBlending,depthWrite:false}))); cam.position.z=100; let t=0; function a(){requestAnimationFrame(a); t+=0.0005; s.children[0].rotation.y=t*0.2; s.children[1].rotation.y=t*0.8; s.children[2].rotation.y=t*0.6; s.children[1].material.opacity=0.7+Math.sin(t*10)*0.3; r.render(s,cam);} a(); }
 
-        /* --- 5. AI (UPDATED MODEL & KEY) --- */
+        /* --- 5. AI (GEMINI) --- */
         async function callGemini(prompt) {
             if(!checkAccess()) return; 
             try {
-                // CHANGED MODEL TO gemini-pro (Standard)
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+                // AUTO-SWITCH: Try Flash first, then Pro
+                let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
-                const d = await res.json();
+                let d = await res.json();
+                
+                // If Flash fails, try Pro
                 if(d.error) {
-                    if(d.error.message.includes("API key not valid")) { keyModal.classList.add('active'); return "Error: Key Invalid. Paste new key in popup."; }
+                    console.warn("Flash failed, switching to Pro...");
+                    res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+                        method: 'POST', headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    });
+                    d = await res.json();
+                }
+
+                if(d.error) {
+                    if(d.error.message.includes("API key not valid") || d.error.message.includes("key not found")) {
+                        keyModal.classList.add('active'); 
+                        return "Error: Key Invalid. Please paste new key in popup.";
+                    }
                     return "API Error: " + d.error.message;
                 }
                 return d.candidates[0].content.parts[0].text;
