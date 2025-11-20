@@ -39,13 +39,13 @@
         /* --- CANVAS LAYERS --- */
         #canvas-top {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; /* Behind everything */
+            z-index: -1; /* Deep background */
             background: radial-gradient(circle at center, #111 0%, #000 100%);
         }
 
         #canvas-bottom {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; /* Behind contact form content */
+            z-index: 0; /* Behind contact content */
             pointer-events: none;
         }
 
@@ -82,17 +82,32 @@
         .loader-progress { width: 0%; height: 100%; background: var(--primary); animation: load 1.5s ease-in-out forwards; }
         @keyframes load { to { width: 100%; } }
 
-        /* --- RESPONSIVE 3D GALLERY --- */
+        /* --- RESTORED: FUTURE READY NEON RING --- */
+        .rotating-border { position: relative; border-radius: 50%; z-index: 1; }
+        .rotating-border::before {
+            content: ''; position: absolute; inset: -10px; border-radius: 50%;
+            background: conic-gradient(transparent 0deg, transparent 270deg, #00f2ff 360deg);
+            animation: rotate 4s linear infinite; z-index: -2; filter: blur(10px);
+        }
+        .rotating-border::after {
+            content: ''; position: absolute; inset: -4px; border-radius: 50%;
+            background: conic-gradient(transparent 0deg, transparent 270deg, #00f2ff 360deg);
+            animation: rotate 4s linear infinite; z-index: -1;
+        }
+        .rotating-inner { position: absolute; inset: 2px; background: #050505; border-radius: 50%; z-index: 0; display: flex; align-items: center; justify-content: center; }
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- OPTIMIZED 3D GALLERY --- */
         .gallery-viewport {
             position: relative;
             width: 100%;
-            height: 85vh; /* Large on desktop */
+            height: 500px; /* Fixed height for consistency */
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            perspective: 1200px;
-            touch-action: none;
+            perspective: 1000px;
+            touch-action: none; /* Crucial for swipe */
             cursor: grab;
         }
         .gallery-viewport:active { cursor: grabbing; }
@@ -100,45 +115,36 @@
         .gallery-ring {
             position: absolute;
             transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
+            transition: transform 0.1s ease-out; /* Smooth drag */
         }
 
         .gallery-item {
             position: absolute;
             top: 50%; left: 50%;
-            width: 320px; height: 450px; /* Desktop Size */
-            margin-left: -160px; margin-top: -225px;
-            background: #000;
+            /* Responsive Sizes */
+            width: 280px; height: 200px; 
+            margin-left: -140px; margin-top: -100px;
+            background: rgba(255,255,255,0.05);
             border: 1px solid rgba(0, 242, 255, 0.3);
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
             transform-style: preserve-3d;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            /* Reflection effect */
-            -webkit-box-reflect: below 10px linear-gradient(transparent, transparent, rgba(0,0,0,0.3));
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
+            /* Clickable */
+            pointer-events: auto; 
         }
 
         .gallery-item img {
             width: 100%; height: 100%; object-fit: cover;
-            filter: grayscale(0.8) brightness(0.7);
-            transition: 0.4s;
-            pointer-events: none;
+            pointer-events: none; /* Prevent image dragging */
         }
 
-        .gallery-item:hover img { filter: grayscale(0) brightness(1.1); }
-        .gallery-item:hover {
-            border-color: var(--secondary);
-            box-shadow: 0 0 40px var(--secondary);
-            transform: scale(1.1) translateZ(30px); /* Pop out */
-            z-index: 10;
-        }
-
-        /* Mobile Adjustments for Gallery */
+        /* Mobile Specifics for Gallery */
         @media (max-width: 768px) {
-            .gallery-viewport { height: 60vh; perspective: 900px; }
+            .gallery-viewport { height: 350px; perspective: 800px; }
             .gallery-item {
-                width: 200px; height: 280px; /* Smaller on mobile */
-                margin-left: -100px; margin-top: -140px;
+                width: 180px; height: 130px;
+                margin-left: -90px; margin-top: -65px;
             }
         }
 
@@ -196,8 +202,8 @@
                 </div>
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#home" class="text-sm font-medium text-gray-300 hover:text-orange-500 transition uppercase tracking-widest">Home</a>
-                    <a href="#gallery" class="text-sm font-medium text-gray-300 hover:text-orange-500 transition uppercase tracking-widest">Designs</a>
                     <a href="#services" class="text-sm font-medium text-gray-300 hover:text-orange-500 transition uppercase tracking-widest">Services</a>
+                    <a href="#gallery" class="text-sm font-medium text-gray-300 hover:text-orange-500 transition uppercase tracking-widest">Designs</a>
                     <a href="#ai-consultant" class="text-sm font-medium text-[#00f2ff] hover:text-white transition uppercase tracking-widest flex items-center gap-1"><i class="fas fa-robot"></i> AI Tools</a>
                     <a href="#contact-zone" class="bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-orange-500 hover:text-white transition">GET QUOTE</a>
                 </div>
@@ -227,31 +233,8 @@
         </div>
     </section>
 
-    <!-- 3D INTERACTIVE GALLERY -->
-    <section id="gallery" class="relative bg-black overflow-hidden border-y border-white/10">
-        <div class="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-black to-transparent z-10 pointer-events-none"></div>
-        
-        <div class="relative z-20 text-center pt-10 pb-4 pointer-events-none">
-            <h2 class="text-4xl font-bold text-white tracking-widest">OUR <span class="text-[#00f2ff]">GOLD</span> STANDARD</h2>
-            <p class="text-gray-400 text-sm mt-2">Swipe or Drag to Explore • Click for Full Size</p>
-        </div>
-
-        <!-- Viewport -->
-        <div class="gallery-viewport" id="gallery-viewport">
-            <div class="gallery-ring" id="gallery-ring"></div>
-        </div>
-        
-        <div class="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none"></div>
-    </section>
-
-    <!-- Lightbox -->
-    <div class="lightbox" id="lightbox">
-        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-        <img id="lightbox-img" src="" alt="Full View">
-    </div>
-
     <!-- SERVICES -->
-    <section id="services" class="py-24 relative z-10">
+    <section id="services" class="py-24 relative z-10 bg-black/20">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-bold mb-4 text-white">CORE <span class="text-orange-500">COMPETENCIES</span></h2>
@@ -277,13 +260,68 @@
         </div>
     </section>
 
+    <!-- RESTORED: FUTURE READY SECTION (WITH NEON RING) -->
+    <section id="future" class="py-24 relative overflow-hidden bg-[#050505] border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                
+                <!-- The Neon Circular Motion Graphic -->
+                <div class="relative flex justify-center items-center order-2 md:order-1">
+                    <div class="rotating-border w-64 h-64 md:w-80 md:h-80">
+                        <div class="rotating-inner">
+                            <div class="text-center p-8 z-10">
+                                <i class="fas fa-atom text-5xl text-[#00f2ff] mb-4 animate-pulse"></i>
+                                <h3 class="text-2xl font-bold text-white">FUTURE<br>READY</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute w-[120%] h-[120%] border border-[#00f2ff]/20 rounded-full animate-[spin_10s_linear_infinite]">
+                        <div class="w-4 h-4 bg-[#00f2ff] rounded-full absolute top-0 left-1/2 -translate-x-1/2 shadow-[0_0_20px_#00f2ff]"></div>
+                    </div>
+                </div>
+                
+                <div class="order-1 md:order-2">
+                    <h2 class="text-5xl font-bold text-white mb-6">NEXT GEN <span class="text-[#00f2ff]" style="text-shadow: 0 0 20px #00f2ff">ENGINEERING</span></h2>
+                    <p class="text-gray-400 text-lg mb-8">
+                        Experience smart automation, laser leveling, and digital site tracking.
+                    </p>
+                    <ul class="space-y-4 text-gray-300">
+                        <li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Smart Tracking</li>
+                        <li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Precision Layouts</li>
+                        <li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Er. Kishor Kunal (Mob: 6260407385)</li>
+                        <li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Er. Anuj Choudhary (Mob: 9113170550)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D INTERACTIVE GALLERY (RESPONSIVE SIZE) -->
+    <section id="gallery" class="relative bg-gradient-to-b from-black to-[#0a0a12] overflow-hidden border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 py-12 relative z-10 text-center">
+            <h2 class="text-4xl font-bold mb-2 text-white">PROJECT <span class="text-[#00f2ff]">GALLERY</span></h2>
+            <p class="text-gray-400 text-sm">Swipe to Rotate • Click to Zoom</p>
+        </div>
+
+        <!-- Viewport -->
+        <div class="gallery-viewport" id="gallery-viewport">
+            <div class="gallery-ring" id="gallery-ring"></div>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <img id="lightbox-img" src="" alt="Full View">
+    </div>
+
     <!-- AI CONSULTANT -->
     <section id="ai-consultant" class="py-24 relative z-10 bg-black/50 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-16">
                 <span class="text-[#00f2ff] text-sm font-bold tracking-widest uppercase mb-2 block"><i class="fas fa-sparkles"></i> Powered by Gemini AI</span>
                 <h2 class="text-4xl font-bold mb-4 text-white">SMART <span class="text-[#00f2ff]">CONSULTANT</span></h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">Use our AI tools to estimate costs, plan your timeline, or ask design questions.</p>
+                <p class="text-gray-400 max-w-2xl mx-auto">AI tools for Cost, Planning, and Design.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6">
@@ -355,7 +393,7 @@
                 <div class="glass-card p-6 rounded-2xl border-t-4 border-rose-500 md:col-span-2">
                     <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-palette text-rose-500"></i> Interior Stylist</h3>
                     <div class="space-y-3 text-sm">
-                        <input type="text" id="ai-mood-input" class="input-field w-full p-2 rounded-lg" placeholder="Room description (e.g. Small bedroom, modern)...">
+                        <input type="text" id="ai-mood-input" class="input-field w-full p-2 rounded-lg" placeholder="Describe room: e.g. 'Small bedroom, natural light, modern style'">
                         <button onclick="generateMoodBoard()" id="btn-mood" class="w-full py-2 bg-rose-500/20 text-rose-400 border border-rose-500 rounded-lg font-bold">✨ GET PALETTE</button>
                     </div>
                     <div id="result-mood" class="mt-4 text-xs text-gray-300 ai-response-box hidden"></div>
@@ -374,10 +412,10 @@
         </div>
     </section>
 
-    <!-- CONTACT & FOOTER WITH STARS -->
+    <!-- CONTACT & FOOTER -->
     <div id="contact-zone" class="relative w-full min-h-screen flex flex-col justify-between bg-[#050505] border-t border-white/10 overflow-hidden">
         
-        <!-- BACKGROUND 2: STARS (RESTORED!) -->
+        <!-- RESTORED: STARRY BACKGROUND -->
         <div id="canvas-bottom"></div>
 
         <div class="relative z-20 w-full max-w-7xl mx-auto px-4 py-20 flex-grow flex items-center">
@@ -462,7 +500,7 @@
         ];
 
         /* ==========================================
-           GALLERY LOGIC
+           GALLERY LOGIC (RESPONSIVE + INTERACTIVE)
            ========================================== */
         let radius = 0;
         let currentAngle = 0;
@@ -476,10 +514,14 @@
             const viewport = document.getElementById('gallery-viewport');
             if(!ring) return;
 
+            // RESPONSIVE SETTINGS: Tighter radius for mobile
             const isMobile = window.innerWidth < 768;
-            const widthItem = isMobile ? 210 : 360; // Adjust spacing based on screen
+            const widthItem = isMobile ? 210 : 360; 
             const count = galleryImages.length;
             radius = Math.round((count * widthItem) / (2 * Math.PI));
+
+            // Clean old if re-init
+            ring.innerHTML = '';
 
             galleryImages.forEach((imgUrl, index) => {
                 const div = document.createElement('div');
@@ -511,7 +553,7 @@
         }
         function endDrag() { isDragging = false; }
         function animateGallery() {
-            if (!isDragging) targetAngle -= 0.1; 
+            if (!isDragging) targetAngle -= 0.1; // Auto rotate
             currentAngle += (targetAngle - currentAngle) * 0.1;
             const ring = document.getElementById('gallery-ring');
             if (ring) ring.style.transform = `translateZ(-${radius}px) rotateY(${currentAngle}deg)`;
@@ -526,16 +568,21 @@
         function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
 
         /* ==========================================
-           LOADER & CANVAS INIT
+           INIT
            ========================================== */
         window.addEventListener('load', () => {
             const loader = document.getElementById('loader');
             gsap.to(loader, { opacity: 0, duration: 0.5, delay: 1.5, onComplete: () => loader.style.display = 'none' });
             initTypewriter();
             initTerrainCanvas();
-            initRealisticSpace(); // Restored stars!
+            initRealisticSpace(); // Stars back!
             initGallery();
             VanillaTilt.init(document.querySelectorAll("[data-tilt]"), { max: 15, speed: 400, glare: true, "max-glare": 0.2 });
+        });
+
+        window.addEventListener('resize', () => {
+            // Re-calc gallery on resize
+            initGallery();
         });
 
         function initTypewriter() {
@@ -554,7 +601,7 @@
         }
 
         /* ==========================================
-           CANVAS 1: TOP TERRAIN (ORANGE)
+           CANVAS 1: TOP TERRAIN
            ========================================== */
         function initTerrainCanvas() {
             const container = document.getElementById('canvas-top');
@@ -564,7 +611,6 @@
             const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             container.appendChild(renderer.domElement);
-
             const geometry = new THREE.BufferGeometry();
             const count = 1200;
             const positions = new Float32Array(count * 3);
@@ -575,7 +621,6 @@
             const particles = new THREE.Points(geometry, material);
             scene.add(particles);
             camera.position.set(0,10,20); camera.lookAt(0,0,0);
-
             let t = 0;
             function animate() {
                 requestAnimationFrame(animate); t+=0.02;
@@ -588,7 +633,7 @@
         }
 
         /* ==========================================
-           CANVAS 2: BOTTOM STARS (BLUE/WHITE)
+           CANVAS 2: RESTORED STARS
            ========================================== */
         function initRealisticSpace() {
             const container = document.getElementById('canvas-bottom');
@@ -645,7 +690,7 @@
         /* ==========================================
            GEMINI AI FUNCTIONS
            ========================================== */
-        const apiKey = "AIzaSyBvLO_lz_jkGpxYbCue0i41x47yYy7fuec"; // Your Key
+        const apiKey = "AIzaSyBvLO_lz_jkGpxYbCue0i41x47yYy7fuec"; 
 
         async function callGemini(prompt) {
             try {
