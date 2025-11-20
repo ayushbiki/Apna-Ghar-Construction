@@ -1,220 +1,295 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apna Ghar Construction | Architectural Excellence</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;800&family=Outfit:wght@300;400;600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-    <style>
-        :root { --primary: #ff6b00; --secondary: #00f2ff; --dark: #050505; }
-        body { font-family: 'Outfit', sans-serif; background-color: var(--dark); color: white; overflow-x: hidden; }
-        h1, h2, h3, .tech-font { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
-        
-        /* BACKGROUNDS */
-        #canvas-top { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #111 0%, #000 100%); }
-        #canvas-bottom { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-
-        /* GLASS & INPUTS */
-        .glass-card { background: rgba(20, 20, 20, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); transition: all 0.4s ease; }
-        .input-field { background: rgba(0,0,0,0.6); border: 1px solid #333; color: white; transition: 0.3s; }
-        .input-field:focus { border-color: var(--secondary); outline: none; box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
-        .gradient-text { background: linear-gradient(135deg, #fff 0%, #999 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* SOCIAL ICONS */
-        .social-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; transition: 0.3s; background: white; }
-        .social-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(255,255,255,0.5); }
-        .icon-fb { color: #1877F2; } .icon-insta { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } .icon-wa { color: #25D366; }
-
-        /* LOADER */
-        .loader-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-        .loader-bar { width: 200px; height: 2px; background: #333; margin-top: 20px; overflow: hidden; }
-        .loader-progress { width: 0%; height: 100%; background: var(--primary); animation: load 1.5s ease-in-out forwards; }
-        @keyframes load { to { width: 100%; } }
-
-        /* NEON RING */
-        .rotating-border { position: relative; border-radius: 50%; z-index: 1; }
-        .rotating-border::before { content: ''; position: absolute; inset: -10px; border-radius: 50%; background: conic-gradient(transparent 0deg, transparent 270deg, #00f2ff 360deg); animation: rotate 4s linear infinite; z-index: -2; filter: blur(10px); }
-        .rotating-border::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: conic-gradient(transparent 0deg, transparent 270deg, #00f2ff 360deg); animation: rotate 4s linear infinite; z-index: -1; }
-        .rotating-inner { position: absolute; inset: 2px; background: #050505; border-radius: 50%; z-index: 0; display: flex; align-items: center; justify-content: center; }
-        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* 3D GALLERY */
-        .gallery-viewport { position: relative; width: 100%; height: 420px; overflow: hidden; display: flex; align-items: center; justify-content: center; perspective: 1000px; touch-action: none; cursor: grab; }
-        .gallery-viewport:active { cursor: grabbing; }
-        .gallery-ring { position: absolute; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
-        .gallery-ring.interacting .gallery-item { box-shadow: 0 0 30px var(--secondary); border-color: var(--secondary); }
-        .gallery-item { position: absolute; top: 50%; left: 50%; width: 240px; height: 170px; margin-left: -120px; margin-top: -85px; background: rgba(255,255,255,0.05); border: 1px solid rgba(0, 242, 255, 0.3); border-radius: 8px; overflow: hidden; transform-style: preserve-3d; transition: 0.3s; -webkit-box-reflect: below 5px linear-gradient(transparent, transparent, rgba(0,0,0,0.3)); }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-        @media (max-width: 768px) { .gallery-viewport { height: 300px; perspective: 800px; } .gallery-item { width: 160px; height: 110px; margin-left: -80px; margin-top: -55px; } }
-
-        .lightbox { position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .lightbox.open { opacity: 1; pointer-events: all; }
-        .lightbox img { max-width: 95%; max-height: 95%; border: 2px solid var(--primary); transform: scale(0.9); transition: 0.3s; }
-        .lightbox.open img { transform: scale(1); }
-        .lightbox-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; }
-
-        .ai-response-box table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
-        .ai-response-box th { background: rgba(255, 107, 0, 0.2); color: var(--primary); padding: 5px; text-align: left; }
-        .ai-response-box td { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 5px; }
-        .color-swatch { width: 20px; height: 20px; border-radius: 50%; display: inline-block; border: 1px solid #fff; margin-right: 5px; vertical-align: middle; }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Apna Ghar — AI Access Demo</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin: 20px; }
+    .lead { max-width: 560px; margin: 0 auto; }
+    .field { margin-bottom: 12px; }
+    .field label { display:block; margin-bottom:6px; }
+    input[type="text"], input[type="email"], input[type="tel"], textarea {
+      width:100%; padding:8px; box-sizing: border-box;
+    }
+    button { padding:10px 14px; cursor:pointer; }
+    #lead-modal.active { display:block; }
+    #lead-modal { display:none; position:fixed; left:0; right:0; top:0; bottom:0; background:rgba(0,0,0,0.5);
+      display:flex; align-items:center; justify-content:center; }
+    #lead-modal .card { background:#fff; padding:20px; border-radius:8px; width:90%; max-width:480px; }
+    .log { background:#f5f5f5; padding:10px; font-family:monospace; height:120px; overflow:auto; }
+  </style>
 </head>
 <body>
-    <div class="loader-overlay" id="loader"><h2 class="text-3xl font-bold tracking-[0.3em] text-white">APNA GHAR CONSTRUCTION</h2><div class="loader-bar"><div class="loader-progress"></div></div></div>
-    <div id="canvas-top"></div>
-    
-    <!-- NAV -->
-    <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-lg border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <div class="w-10 h-10 bg-orange-600 flex items-center justify-center rounded skew-x-[-10deg]"><i class="fas fa-building text-white text-lg skew-x-[10deg]"></i></div>
-                    <div><h1 class="text-2xl font-bold leading-none text-white tracking-wide">APNA GHAR</h1><span class="text-xs text-orange-500 font-bold tracking-[0.3em] block">CONSTRUCTION</span></div>
-                </div>
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#home" class="text-sm font-medium text-gray-300 hover:text-orange-500 transition uppercase tracking-widest">Home</a>
-                    <a href="#gallery" class="text-sm font-medium text-gray-300 hover:text-orange-500 transition uppercase tracking-widest">Designs</a>
-                    <a href="#services" class="text-sm font-medium text-gray-300 hover:text-orange-500 transition uppercase tracking-widest">Services</a>
-                    <a href="#ai-consultant" class="text-sm font-medium text-[#00f2ff] hover:text-white transition uppercase tracking-widest flex items-center gap-1"><i class="fas fa-robot"></i> AI Tools</a>
-                    <a href="#contact-zone" class="bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-orange-500 hover:text-white transition">GET QUOTE</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+  <div class="lead">
+    <h2>AI Access (Apna Ghar) — Demo</h2>
+    <p>Enter details to unlock AI content. (This page uses EmailJS for lead emails.)</p>
 
-    <!-- HERO -->
-    <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 relative z-10 w-full grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <div class="inline-flex items-center gap-2 px-3 py-1 border border-orange-500/50 rounded-full bg-orange-900/10 text-orange-400 mb-6 text-sm font-bold tracking-wider"><span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> GOVT. APPROVED</div>
-                <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-4"><span class="gradient-text">WE BUILD</span><br><span class="gradient-orange" id="typing-text"></span></h1>
-                <p class="text-gray-400 text-lg mb-8 max-w-lg">Transforming blueprints into reality. From <span class="text-white font-bold">3D Mapping</span> to <span class="text-white font-bold">Turnkey Construction</span>.</p>
-                <div class="flex gap-4 mb-8"><a href="#contact-zone" class="px-8 py-4 bg-white text-black font-bold rounded-lg hover:bg-gray-200 transition">START PROJECT</a><a href="#gallery" class="px-8 py-4 border border-white text-white font-bold rounded-lg hover:bg-white hover:text-black transition">VIEW DESIGNS</a></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- GALLERY -->
-    <section id="gallery" class="relative bg-black overflow-hidden border-y border-white/10">
-        <div class="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-black to-transparent z-10 pointer-events-none"></div>
-        <div class="relative z-20 text-center pt-10 pb-4 pointer-events-none"><h2 class="text-4xl font-bold text-white tracking-widest">OUR <span class="text-[#00f2ff]">GOLD</span> STANDARD</h2><p class="text-gray-400 text-sm mt-2">Swipe to Rotate • Click to Zoom</p></div>
-        <div class="gallery-viewport" id="gallery-viewport"><div class="gallery-ring" id="gallery-ring"></div></div>
-        <div class="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none"></div>
-    </section>
-    <div class="lightbox" id="lightbox"><span class="lightbox-close" onclick="closeLightbox()">&times;</span><img id="lightbox-img" src="" alt="Full View"></div>
-
-    <!-- SERVICES -->
-    <section id="services" class="py-24 relative z-10 bg-black/20">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-16"><h2 class="text-4xl font-bold mb-4 text-white">CORE <span class="text-orange-500">COMPETENCIES</span></h2><div class="w-20 h-1 bg-gradient-to-r from-orange-500 to-transparent mx-auto"></div></div>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="glass-card p-8 rounded-xl" data-tilt><i class="fas fa-pencil-ruler text-4xl text-blue-400 mb-4"></i><h3 class="text-2xl font-bold text-white mb-3">Architecture</h3><p class="text-gray-400 text-sm">2D/3D Elevation, Structural Design, and Vastu Compliant layouts.</p></div>
-                <div class="glass-card p-8 rounded-xl border-orange-500/30" data-tilt><i class="fas fa-trowel-bricks text-4xl text-orange-400 mb-4"></i><h3 class="text-2xl font-bold text-white mb-3">Construction</h3><p class="text-gray-400 text-sm">End-to-end construction with premium material and supervision.</p></div>
-                <div class="glass-card p-8 rounded-xl" data-tilt><i class="fas fa-swatchbook text-4xl text-purple-400 mb-4"></i><h3 class="text-2xl font-bold text-white mb-3">Interiors</h3><p class="text-gray-400 text-sm">Modular Kitchens, False Ceilings, and modern electrical planning.</p></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FUTURE -->
-    <section id="future" class="py-24 relative overflow-hidden bg-[#050505] border-y border-white/5">
-        <div class="max-w-7xl mx-auto px-4 relative z-10">
-            <div class="grid md:grid-cols-2 gap-16 items-center">
-                <div class="relative flex justify-center items-center order-2 md:order-1"><div class="rotating-border w-64 h-64 md:w-80 md:h-80"><div class="rotating-inner"><div class="text-center p-8 z-10"><i class="fas fa-atom text-5xl text-[#00f2ff] mb-4 animate-pulse"></i><h3 class="text-2xl font-bold text-white">FUTURE<br>READY</h3></div></div></div><div class="absolute w-[120%] h-[120%] border border-[#00f2ff]/20 rounded-full animate-[spin_10s_linear_infinite]"><div class="w-4 h-4 bg-[#00f2ff] rounded-full absolute top-0 left-1/2 -translate-x-1/2 shadow-[0_0_20px_#00f2ff]"></div></div></div>
-                <div class="order-1 md:order-2"><h2 class="text-5xl font-bold text-white mb-6">NEXT GEN <span class="text-[#00f2ff]" style="text-shadow: 0 0 20px #00f2ff">ENGINEERING</span></h2><ul class="space-y-4 text-gray-300"><li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Smart Tracking & Laser Layouts</li><li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Precision Layouts</li><li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Er. Kishor Kunal (Mob: 6260407385)</li><li class="flex items-center gap-3"><span class="w-2 h-2 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></span> Er. Anuj Choudhary (Mob: 9113170550)</li></ul></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- AI CONSULTANT -->
-    <section id="ai-consultant" class="py-24 relative z-10 bg-black/50 border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-16"><span class="text-[#00f2ff] text-sm font-bold tracking-widest uppercase mb-2 block"><i class="fas fa-sparkles"></i> Powered by Gemini AI</span><h2 class="text-4xl font-bold mb-4 text-white">SMART <span class="text-[#00f2ff]">CONSULTANT</span></h2><p class="text-gray-400 max-w-2xl mx-auto">Instant construction intelligence at your fingertips.</p></div>
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="glass-card p-6 rounded-2xl border-t-4 border-[#00f2ff]"><h3 class="text-lg font-bold text-white mb-4 gap-2 flex items-center"><i class="fas fa-calculator text-[#00f2ff]"></i> Cost Estimator</h3><div class="space-y-3 text-sm"><input type="number" id="ai-area" class="input-field w-full p-2 rounded-lg" placeholder="Area (Sq. Ft)"><select id="ai-quality" class="input-field w-full p-2 rounded-lg"><option>Standard</option><option>Premium</option></select><button onclick="generateCostEstimate()" id="btn-estimate" class="w-full py-2 bg-[#00f2ff]/20 text-[#00f2ff] border border-[#00f2ff] rounded-lg font-bold">✨ ESTIMATE</button></div><div id="result-estimate" class="mt-4 text-xs text-gray-400 ai-response-box hidden"></div></div>
-                <div class="glass-card p-6 rounded-2xl border-t-4 border-purple-500"><h3 class="text-lg font-bold text-white mb-4 gap-2 flex items-center"><i class="fas fa-calendar-alt text-purple-500"></i> Scheduler</h3><div class="space-y-3 text-sm"><select id="ai-project-type" class="input-field w-full p-2 rounded-lg"><option>New House</option><option>Renovation</option></select><button onclick="generateSchedule()" id="btn-schedule" class="w-full py-2 bg-purple-500/20 text-purple-400 border border-purple-500 rounded-lg font-bold">✨ PLAN</button></div><div id="result-schedule" class="mt-4 text-xs text-gray-400 ai-response-box hidden"></div></div>
-                <div class="glass-card p-6 rounded-2xl border-t-4 border-green-500"><h3 class="text-lg font-bold text-white mb-4 gap-2 flex items-center"><i class="fas fa-balance-scale text-green-500"></i> Compare</h3><div class="space-y-3 text-sm"><input type="text" id="ai-material-a" class="input-field w-full p-2 rounded-lg" placeholder="Item A"><button onclick="compareMaterials()" id="btn-compare" class="w-full py-2 bg-green-500/20 text-green-400 border border-green-500 rounded-lg font-bold">✨ COMPARE</button></div><div id="result-compare" class="mt-4 text-xs text-gray-400 ai-response-box hidden"></div></div>
-                <div class="glass-card p-6 rounded-2xl border-t-4 border-orange-500 md:col-span-2"><h3 class="text-lg font-bold text-white mb-4 gap-2 flex items-center"><i class="fas fa-comments text-orange-500"></i> Vastu Chat</h3><div class="flex gap-2"><input type="text" id="chat-input" class="input-field flex-grow p-2 rounded-lg text-sm" placeholder="Question..."><button onclick="sendChatMessage()" id="btn-chat" class="w-10 h-10 bg-orange-600 rounded-lg text-white"><i class="fas fa-paper-plane"></i></button></div><div id="chat-history" class="mt-2 h-20 overflow-y-auto text-xs text-gray-400"></div></div>
-                <div class="glass-card p-6 rounded-2xl border-t-4 border-pink-500"><h3 class="text-lg font-bold text-white mb-4 gap-2 flex items-center"><i class="fas fa-book text-pink-500"></i> Decoder</h3><div class="flex gap-2"><input type="text" id="ai-jargon-input" class="input-field flex-grow p-2 rounded-lg text-sm" placeholder="Term..."><button onclick="explainJargon()" id="btn-jargon" class="w-10 h-10 bg-pink-600 rounded-lg text-white"><i class="fas fa-search"></i></button></div><div id="result-jargon" class="mt-4 text-xs text-gray-300 hidden"></div></div>
-            </div>
-        </div>
-    </section>
-
-    <div id="contact-zone" class="relative w-full min-h-screen flex flex-col justify-between bg-[#050505] border-t border-white/10 overflow-hidden">
-        <div id="canvas-bottom"></div>
-        <div class="relative z-20 w-full max-w-7xl mx-auto px-4 py-20 flex-grow flex items-center">
-            <div class="grid lg:grid-cols-2 gap-20 items-center w-full">
-                <div class="text-left"><h2 class="text-6xl md:text-8xl font-bold text-white mb-4 tracking-tighter">BUILD<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">DREAMS</span></h2><div class="flex gap-6 items-center mb-8"><a href="https://www.facebook.com/share/17pdk9CXXg/" target="_blank" class="social-btn"><i class="fab fa-facebook-f icon-fb"></i></a><a href="https://www.instagram.com/ayushbiki" target="_blank" class="social-btn"><i class="fab fa-instagram icon-insta font-bold"></i></a><a href="https://wa.me/916260407385" target="_blank" class="social-btn"><i class="fab fa-whatsapp icon-wa"></i></a></div><div class="mt-6 border-l-2 border-white/20 pl-6"><p class="text-xl font-bold text-white hover:text-orange-500"><a href="tel:6260407385">+91 62604 07385</a> (Er. Kishor)</p><p class="text-xl font-bold text-white hover:text-orange-500"><a href="tel:9113170550">+91 91131 70550</a> (Er. Anuj)</p></div></div>
-                <div class="glass-card p-10 rounded-3xl bg-black/40 backdrop-blur-xl"><h3 class="text-3xl font-bold text-white mb-6">Get a Quote</h3><form id="contact-form" class="space-y-5"><input type="text" id="form-name" name="user_name" placeholder="Name" class="input-field w-full p-4 rounded-xl" required><input type="tel" id="form-phone" name="user_phone" placeholder="Phone" class="input-field w-full p-4 rounded-xl" required><div class="relative"><textarea id="msg-area" name="message" placeholder="Requirements..." class="input-field w-full p-4 rounded-xl h-32"></textarea><button type="button" onclick="magicDraft()" id="btn-magic" class="absolute top-2 right-2 bg-[#00f2ff]/20 text-[#00f2ff] text-xs px-3 py-1 rounded-full border border-[#00f2ff]">✨ AI Draft</button></div><button type="submit" id="send-btn" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl text-white font-bold">SEND ENQUIRY</button></form></div>
-            </div>
-        </div>
+    <div class="field">
+      <label for="lead-name">Name</label>
+      <input id="lead-name" type="text" placeholder="Full name" />
     </div>
 
-    <script>
-        /* --- 1. EMAIL JS --- */
-        (function() { emailjs.init("JzFLkksbZNqethvDF"); })();
-        const SERVICE_ID = "service_d5404dw";
-        const TEMPLATE_ID = "template_rg6sr9f";
+    <div class="field">
+      <label for="lead-email">Email</label>
+      <input id="lead-email" type="email" placeholder="Email address" />
+    </div>
 
-        // Quote Form -> EmailJS
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault(); const btn = document.getElementById('send-btn'); btn.innerText = 'SENDING...';
-            const params = { user_name: document.getElementById('form-name').value, user_phone: document.getElementById('form-phone').value, message: document.getElementById('msg-area').value, source: "Contact Form" };
-            emailjs.send(SERVICE_ID, TEMPLATE_ID, params).then(() => {
-                btn.innerHTML = 'SENT ✔'; btn.style.background = '#10B981';
-                setTimeout(() => { document.getElementById('contact-form').reset(); btn.innerText = "SEND ENQUIRY"; btn.style.background = ''; }, 3000);
-            }, (err) => { alert("Email Error: " + JSON.stringify(err)); btn.innerText = 'SEND ENQUIRY'; });
+    <div class="field">
+      <label for="lead-phone">Phone (optional)</label>
+      <input id="lead-phone" type="tel" placeholder="Phone number" />
+    </div>
+
+    <button id="unlock-btn">UNLOCK ACCESS</button>
+
+    <h3>AI Output</h3>
+    <div id="ai-output" style="white-space:pre-wrap; border:1px solid #ddd; padding:10px; min-height:120px;"></div>
+
+    <h4>Debug log (console mirror)</h4>
+    <div id="dbg" class="log"></div>
+  </div>
+
+  <!-- Modal for lead capture -->
+  <div id="lead-modal">
+    <div class="card">
+      <h3>Confirm details</h3>
+      <div class="field">
+        <label for="confirm-name">Name</label>
+        <input id="confirm-name" type="text" />
+      </div>
+      <div class="field">
+        <label for="confirm-email">Email</label>
+        <input id="confirm-email" type="email" />
+      </div>
+      <div style="text-align:right;">
+        <button id="lead-send">SEND & UNLOCK</button>
+        <button id="lead-cancel">CANCEL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
+  <script>
+    /****************************************************************
+     * CONFIGURATION (edit these values as-needed)
+     *
+     * Recommended: Keep PROXY_MODE=true (call your server endpoint),
+     * and have the server call the Google Generative API with the key.
+     ****************************************************************/
+    const SERVICE_ID = "service_d5404dw";         // from your screenshot
+    const TEMPLATE_ID = "template_rg6sr9f";       // from your screenshot
+    const EMAILJS_PUBLIC_KEY = "JzFLkksbZNqethvDF";// from your screenshot (public key)
+
+    // If you want to test direct client-side Google calls (not secure for prod),
+    // set PROXY_MODE = false and put your key in DIRECT_GOOGLE_API_KEY.
+    // Otherwise set PROXY_MODE = true and create a small server endpoint /api/gemini
+    // that calls Google with the secret key.
+    const PROXY_MODE = true;
+    const PROXY_ENDPOINT = "/api/gemini"; // change to your serverless function URL if deployed
+    const DIRECT_GOOGLE_API_KEY = "YOUR_GOOGLE_API_KEY_HERE"; // placeholder only (unsafe in prod)
+
+    // Initialize EmailJS (public key is OK on client)
+    (function(){
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+      logDbg("EmailJS initialized (public key set).");
+    })();
+
+    // UI elements
+    const btn = document.getElementById('unlock-btn');
+    const modal = document.getElementById('lead-modal');
+    const confirmName = document.getElementById('confirm-name');
+    const confirmEmail = document.getElementById('confirm-email');
+    const leadSend = document.getElementById('lead-send');
+    const leadCancel = document.getElementById('lead-cancel');
+    const dbg = document.getElementById('dbg');
+    const aiOutput = document.getElementById('ai-output');
+
+    // Local state: is user allowed?
+    let isAccessGranted = false;
+
+    // Utility: append to debug area and console
+    function logDbg(...args){
+      console.log(...args);
+      dbg.textContent += args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n';
+      dbg.scrollTop = dbg.scrollHeight;
+    }
+
+    // checkAccess now accepts the event (so no implicit global event)
+    function checkAccess(evt) {
+      if (!isAccessGranted) {
+        if (evt && evt.stopImmediatePropagation) evt.stopImmediatePropagation();
+        // open modal
+        document.getElementById('confirm-name').value = document.getElementById('lead-name').value || '';
+        document.getElementById('confirm-email').value = document.getElementById('lead-email').value || '';
+        modal.classList.add('active');
+        return false;
+      }
+      return true;
+    }
+
+    // Click unlock: open modal (or proceed if already granted)
+    btn.addEventListener('click', (e) => {
+      if (!checkAccess(e)) return;
+      // already granted: call AI directly
+      requestAIAndShow("Give me a short study plan for learning waves in physics (JEE level).");
+    });
+
+    // modal buttons
+    leadCancel.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+
+    leadSend.addEventListener('click', () => {
+      // read values from confirm inputs
+      const name = confirmName.value.trim();
+      const email = confirmEmail.value.trim();
+      const phone = document.getElementById('lead-phone').value.trim();
+
+      if (!name || !email) {
+        alert("Please enter name and email.");
+        return;
+      }
+
+      // Send via EmailJS and on success grant access
+      const params = {
+        name: name,
+        email: email,
+        phone: phone,
+        source: "ApnaGhar - Website"
+      };
+
+      btn.disabled = true;
+      btn.textContent = "SENDING...";
+
+      logDbg("Sending EmailJS with params:", params);
+      emailjs.send(SERVICE_ID, TEMPLATE_ID, params)
+        .then(resp => {
+          logDbg("EmailJS success:", resp);
+          localStorage.setItem('apnaGharLead', JSON.stringify(params));
+          isAccessGranted = true;
+          modal.classList.remove('active');
+          btn.disabled = false;
+          btn.textContent = "UNLOCK ACCESS";
+          alert("Access granted. You can now request AI output.");
+          // optional: auto-call the AI after granting access:
+          requestAIAndShow("Create a short JEE-level summary on simple harmonic motion with formulas and one practice problem.");
+        })
+        .catch(err => {
+          console.error('EmailJS error:', err);
+          logDbg("EmailJS error:", err);
+          alert("Failed to send lead info. Check console/network and your EmailJS settings.");
+          btn.disabled = false;
+          btn.textContent = "UNLOCK ACCESS";
         });
+    });
 
-        /* --- 2. GALLERY LOGIC --- */
-        const galleryImages = ["https://ayushbiki.github.io/Apna-Ghar-Construction/1.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/2.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/3.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/4.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/5.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/6.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/7.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/8.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/9.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/10.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/11.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/12.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/13.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/14.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/15.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/16.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/17.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/18.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/19.jpg", "https://ayushbiki.github.io/Apna-Ghar-Construction/20.jpg"];
-        let radius=0, currentAngle=0, targetAngle=0, isDragging=false, startX=0, lastX=0;
-        function initGallery() { const ring=document.getElementById('gallery-ring'), viewport=document.getElementById('gallery-viewport'); if(!ring)return; const isMobile=window.innerWidth<768, widthItem=isMobile?180:260, count=galleryImages.length; radius=Math.round((count*widthItem)/(2*Math.PI))-30; ring.innerHTML=''; galleryImages.forEach((url,i)=>{ const d=document.createElement('div'); d.className='gallery-item'; d.style.transform=`rotateY(${i*(360/count)}deg) translateZ(${radius}px)`; d.onclick=()=>openLightbox(url); d.innerHTML=`<img src="${url}">`; ring.appendChild(d); }); ring.style.transform=`translateZ(-${radius}px) rotateY(0deg)`;
-        const start=x=>{isDragging=true;startX=x;lastX=x;ring.classList.add('interacting');}, move=x=>{if(!isDragging)return;const d=x-lastX;lastX=x;targetAngle+=d*0.15;}, end=()=>{isDragging=false;ring.classList.remove('interacting');};
-        viewport.addEventListener('mousedown',e=>start(e.clientX)); viewport.addEventListener('touchstart',e=>start(e.touches[0].clientX)); window.addEventListener('mousemove',e=>move(e.clientX)); window.addEventListener('touchmove',e=>move(e.touches[0].clientX)); window.addEventListener('mouseup',end); window.addEventListener('touchend',end); animateGallery(); }
-        function animateGallery() { if(!isDragging)targetAngle-=0.02; currentAngle+=(targetAngle-currentAngle)*0.05; const r=document.getElementById('gallery-ring'); if(r)r.style.transform=`translateZ(-${radius}px) rotateY(${currentAngle}deg)`; requestAnimationFrame(animateGallery); }
-        function openLightbox(src) { document.getElementById('lightbox-img').src=src; document.getElementById('lightbox').classList.add('open'); } function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
-        
-        /* --- 4. BACKGROUNDS --- */
-        window.addEventListener('load', () => { gsap.to('#loader', {opacity:0, duration:0.5, delay:1.5, onComplete:()=>document.getElementById('loader').style.display='none'}); initTerrainCanvas(); initRealisticSpace(); initGallery(); initTypewriter(); });
-        function initTypewriter() { const el = document.getElementById('typing-text'); const words = ["DREAM HOMES", "FUTURE CITIES", "APNA GHAR"]; let i=0, j=0, isDel=false; function type() { el.textContent = words[i].substring(0, j + (isDel ? -1 : 1)); j += isDel ? -1 : 1; if (!isDel && j === words[i].length) { isDel=true; setTimeout(type, 2000); } else if (isDel && j === 0) { isDel=false; i=(i+1)%words.length; setTimeout(type, 500); } else setTimeout(type, isDel ? 50 : 100); } type(); }
-        function initTerrainCanvas() { const c=document.getElementById('canvas-top'), s=new THREE.Scene(), cam=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000), r=new THREE.WebGLRenderer({alpha:true,antialias:true}); r.setSize(window.innerWidth,window.innerHeight); c.appendChild(r.domElement); const g=new THREE.BufferGeometry(), pos=new Float32Array(3600); for(let k=0,x=-40;x<40;x+=2)for(let z=-40;z<40;z+=2){if(k<3600){pos[k]=x;pos[k+1]=0;pos[k+2]=z;k+=3;}} g.setAttribute('position',new THREE.BufferAttribute(pos,3)); s.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xff6b00,size:0.15}))); cam.position.set(0,10,20); cam.lookAt(0,0,0); function a(){requestAnimationFrame(a); r.render(s,cam);} a(); }
-        function initRealisticSpace() { const c=document.getElementById('canvas-bottom'), s=new THREE.Scene(), cam=new THREE.PerspectiveCamera(75,c.clientWidth/c.clientHeight,0.1,1000), r=new THREE.WebGLRenderer({alpha:true,antialias:true}); r.setSize(c.clientWidth,c.clientHeight); c.appendChild(r.domElement); const canvas=document.createElement('canvas');canvas.width=32;canvas.height=32;const ctx=canvas.getContext('2d');const grad=ctx.createRadialGradient(16,16,0,16,16,16);grad.addColorStop(0,'rgba(255,255,255,1)');grad.addColorStop(0.2,'rgba(255,255,255,0.8)');grad.addColorStop(0.5,'rgba(255,255,255,0.2)');grad.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=grad;ctx.fillRect(0,0,32,32);const starTexture=new THREE.Texture(canvas);starTexture.needsUpdate=true; const g1=new THREE.BufferGeometry(), p1=new Float32Array(4000*3); for(let i=0;i<12000;i++)p1[i]=(Math.random()-0.5)*600; g1.setAttribute('position',new THREE.BufferAttribute(p1,3)); s.add(new THREE.Points(g1,new THREE.PointsMaterial({color:0xaaaaaa,size:0.8,map:starTexture,transparent:true,opacity:0.8,depthWrite:false}))); const g2=new THREE.BufferGeometry(), p2=[], c2=[]; const colors=[new THREE.Color(0xffffff),new THREE.Color(0xffddaa),new THREE.Color(0xaaddff),new THREE.Color(0xffaa88)]; for(let i=0;i<200;i++){p2.push((Math.random()-0.5)*300,(Math.random()-0.5)*200,(Math.random()-0.5)*100+50); const col=colors[Math.floor(Math.random()*colors.length)]; c2.push(col.r,col.g,col.b);} g2.setAttribute('position',new THREE.Float32BufferAttribute(p2,3)); g2.setAttribute('color',new THREE.Float32BufferAttribute(c2,3)); s.add(new THREE.Points(g2,new THREE.PointsMaterial({size:3.5,map:starTexture,vertexColors:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false}))); const g3=new THREE.BufferGeometry(), p3=[]; for(let i=0;i<5;i++)p3.push((Math.random()-0.5)*250,(Math.random()-0.5)*150,(Math.random()-0.5)*50+60); g3.setAttribute('position',new THREE.Float32BufferAttribute(p3,3)); s.add(new THREE.Points(g3,new THREE.PointsMaterial({color:0xffcc00,size:12.0,map:starTexture,transparent:true,opacity:0.5,blending:THREE.AdditiveBlending,depthWrite:false}))); cam.position.z=100; let t=0; function a(){requestAnimationFrame(a); t+=0.0005; s.children[0].rotation.y=t*0.2; s.children[1].rotation.y=t*0.8; s.children[2].rotation.y=t*0.6; s.children[1].material.opacity=0.7+Math.sin(t*10)*0.3; r.render(s,cam);} a(); }
+    /**************************************************************************
+     * requestAIAndShow(prompt)
+     *
+     * This function will call either:
+     *  - your serverless proxy (PROXY_MODE=true) at PROXY_ENDPOINT, or
+     *  - Google Generative API directly (PROXY_MODE=false) using DIRECT_GOOGLE_API_KEY.
+     *
+     * IMPORTANT: For production ALWAYS use a server-side proxy to hide your API key.
+     **************************************************************************/
+    async function requestAIAndShow(prompt) {
+      aiOutput.textContent = "Thinking...";
+      logDbg("AI request prompt:", prompt);
 
-        /* --- 5. AI (GEMINI PRO - STABLE & SPLIT KEY) --- */
-        async function callGemini(prompt) {
-            try {
-                const p1 = "AIzaSyAH22ep7tK5"; const p2 = "Ay4FhQEGLFYpChlYZJVsiBc";
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${p1+p2}`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                const d = await res.json();
-                if(d.error) return "API Error: " + d.error.message;
-                return d.candidates[0].content.parts[0].text;
-            } catch(e) { return "Offline mode. Check internet."; }
+      try {
+        let resultText = "";
+
+        if (PROXY_MODE) {
+          // PROXY approach: front-end -> your serverless function -> Google API (server keeps the real key)
+          logDbg("Calling proxy endpoint:", PROXY_ENDPOINT);
+          const res = await fetch(PROXY_ENDPOINT, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ prompt })
+          });
+          logDbg("Proxy HTTP status:", res.status);
+          const payload = await res.json().catch(() => null);
+          if (res.ok && payload) {
+            logDbg("Proxy JSON payload:", payload);
+            resultText = payload.output || (payload?.candidates?.[0]?.content?.parts?.[0]?.text ?? JSON.stringify(payload));
+          } else {
+            logDbg("Proxy returned error:", res.status, payload);
+            resultText = `Proxy error ${res.status}: ${JSON.stringify(payload)}`;
+          }
+        } else {
+          // Direct Google call (unsafe on client). Only for quick tests.
+          if (!DIRECT_GOOGLE_API_KEY || DIRECT_GOOGLE_API_KEY === "YOUR_GOOGLE_API_KEY_HERE") {
+            throw new Error("DIRECT_GOOGLE_API_KEY not set. Set it or use PROXY_MODE=true.");
+          }
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${DIRECT_GOOGLE_API_KEY}`;
+          logDbg("Calling Google directly (unsafe) ->", url);
+          const body = {
+            // This object format follows the Generative Language API pattern. Adjust if API differs.
+            temperature: 0.2,
+            candidateCount: 1,
+            prompt: {
+              text: prompt
+            }
+          };
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+          });
+          logDbg("Google HTTP status:", res.status);
+          const text = await res.text();
+          try {
+            const j = JSON.parse(text);
+            logDbg("Google JSON:", j);
+            resultText = j?.candidates?.[0]?.content?.parts?.[0]?.text ?? JSON.stringify(j);
+          } catch (e) {
+            logDbg("Non-JSON Google response:", text);
+            resultText = text;
+          }
         }
 
-        // AI Wrappers
-        async function generateCostEstimate() { const btn=document.getElementById('btn-estimate'); btn.innerHTML='...'; const res=await callGemini(`Estimate cost for house in Bihar: Area ${document.getElementById('ai-area').value} sqft. HTML Table.`); document.getElementById('result-estimate').innerHTML=res.replace(/```html|```/g,''); document.getElementById('result-estimate').classList.remove('hidden'); btn.innerHTML='✨ ESTIMATE'; }
-        async function generateSchedule() { const btn=document.getElementById('btn-schedule'); btn.innerHTML='...'; const res=await callGemini(`Construction timeline starting ${document.getElementById('ai-start-date').value}. HTML list.`); document.getElementById('result-schedule').innerHTML=res.replace(/```html|```/g,''); document.getElementById('result-schedule').classList.remove('hidden'); btn.innerHTML='✨ PLAN'; }
-        async function compareMaterials() { const btn=document.getElementById('btn-compare'); btn.innerHTML='...'; const res=await callGemini(`Compare ${document.getElementById('ai-material-a').value} vs ${document.getElementById('ai-material-b').value} for Bihar. HTML Table.`); document.getElementById('result-compare').innerHTML=res.replace(/```html|```/g,''); document.getElementById('result-compare').classList.remove('hidden'); btn.innerHTML='✨ COMPARE'; }
-        async function sendChatMessage() { const inp=document.getElementById('chat-input'), hist=document.getElementById('chat-history'); if(!inp.value)return; hist.innerHTML+=`<div class="text-right mb-2"><span class="bg-orange-900/30 px-2 py-1 rounded text-orange-200">You: ${inp.value}</span></div>`; const res=await callGemini(`Answer as Apna Ghar AI: ${inp.value}`); hist.innerHTML+=`<div class="text-left mb-2"><span class="text-[#00f2ff]"><strong>AI:</strong> ${marked.parse(res)}</span></div>`; inp.value=''; }
-        async function explainJargon() { const btn=document.getElementById('btn-jargon'); btn.innerHTML='...'; const t=document.getElementById('ai-jargon-input').value; const res=await callGemini(`Explain '${t}' simply.`); document.getElementById('result-jargon').innerHTML=`<strong>${t}:</strong> ${res}`; document.getElementById('result-jargon').classList.remove('hidden'); btn.innerHTML='<i class="fas fa-search"></i>'; }
-        async function magicDraft() { const area=document.getElementById('msg-area'); if(!area.value)return; const btn=document.getElementById('btn-magic'); btn.innerHTML='...'; const txt=await callGemini(`Rewrite professionally: "${area.value}"`); area.value=txt; btn.innerHTML='✨ Done'; }
-    </script>
+        aiOutput.textContent = resultText;
+        logDbg("AI result shown.");
+
+      } catch (err) {
+        console.error("AI request failed:", err);
+        logDbg("AI request failed:", err);
+        aiOutput.textContent = "AI request failed. Check console and network logs.";
+      }
+    }
+
+    /****************************************************************
+     * NOTES & QUICK TROUBLESHOOT (think like reading experiment residuals)
+     *
+     * - If EmailJS send fails: open DevTools → Network → filter by "emailjs".
+     *   Look for status codes (401/403 = key/service mismatch; 400 = bad template params).
+     *
+     * - If proxy returns 401/403: the server's Google key is wrong or the Generative API is not
+     *   enabled on that Google Cloud project (or billing/quotas).
+     *
+     * - If you get CORS errors calling PROXY_ENDPOINT, ensure your serverless function
+     *   returns appropriate CORS headers (Access-Control-Allow-Origin).
+     *
+     * - Physics analogy: EmailJS params are like matching boundary conditions; the Google key
+     *   is like a conserved charge — it must be kept inside a protected container (server).
+     ****************************************************************/
+
+    // OPTIONAL: auto-reload a cached lead (simple UX)
+    (function tryRestoreLead() {
+      try {
+        const s = localStorage.getItem('apnaGharLead');
+        if (s) {
+          const lead = JSON.parse(s);
+          document.getElementById('lead-name').value = lead.name || '';
+          document.getElementById('lead-email').value = lead.email || '';
+          document.getElementById('lead-phone').value = lead.phone || '';
+          // You might choose to restore access automatically or require re-validation:
+          // isAccessGranted = true;
+        }
+      } catch(e) { /* ignore */ }
+    })();
+  </script>
 </body>
 </html>
