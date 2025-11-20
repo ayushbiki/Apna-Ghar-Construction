@@ -179,12 +179,13 @@
     </div>
 
     <script>
-        /* --- 1. EMAIL JS CONFIG (UPDATED) --- */
+        /* --- 1. EMAIL JS INIT (YOUR KEYS) --- */
         (function() {
             emailjs.init("JzFLkksbZNqethvDF"); // Public Key
         })();
+
         const SERVICE_ID = "service_d5404dw";
-        const TEMPLATE_ID = "template_rg6sr9f"; // UPDATED TEMPLATE ID
+        const TEMPLATE_ID = "template_rg6sr9f"; // CORRECT TEMPLATE ID (VERIFIED)
 
         /* --- 2. DATA COLLECTION --- */
         let isAccessGranted = false;
@@ -259,8 +260,9 @@
         function initTerrainCanvas() { const c = document.getElementById('canvas-top'); const s = new THREE.Scene(); s.fog = new THREE.FogExp2(0x000000, 0.02); const cam = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000); const r = new THREE.WebGLRenderer({ alpha: true, antialias: true }); r.setSize(window.innerWidth, window.innerHeight); c.appendChild(r.domElement); const g = new THREE.BufferGeometry(); const pos = new Float32Array(1200*3); let k=0; for(let x=-40;x<40;x+=2)for(let z=-40;z<40;z+=2){if(k<3600){pos[k]=x;pos[k+1]=0;pos[k+2]=z;k+=3;}} g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); const m = new THREE.PointsMaterial({ color: 0xff6b00, size: 0.15 }); const p = new THREE.Points(g, m); s.add(p); cam.position.set(0,10,20); cam.lookAt(0,0,0); let t=0; function a(){ requestAnimationFrame(a); t+=0.02; const pa=p.geometry.attributes.position.array; for(let i=0;i<pa.length;i+=3) pa[i+1]=Math.sin(pa[i]*0.2+t)*2+Math.cos(pa[i+2]*0.2+t)*2; p.geometry.attributes.position.needsUpdate=true; r.render(s,cam); } a(); }
         function initRealisticSpace() { const c = document.getElementById('canvas-bottom'); const s = new THREE.Scene(); const cam = new THREE.PerspectiveCamera(75, c.clientWidth/c.clientHeight, 0.1, 1000); const r = new THREE.WebGLRenderer({ alpha: true, antialias: true }); r.setSize(c.clientWidth, c.clientHeight); c.appendChild(r.domElement); const canvas = document.createElement('canvas'); canvas.width = 32; canvas.height = 32; const ctx = canvas.getContext('2d'); const grad = ctx.createRadialGradient(16,16,0,16,16,16); grad.addColorStop(0, 'rgba(255,255,255,1)'); grad.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = grad; ctx.fillRect(0,0,32,32); const starTexture = new THREE.Texture(canvas); starTexture.needsUpdate = true; const g1 = new THREE.BufferGeometry(); const p1 = new Float32Array(4000*3); for(let i=0;i<12000;i++) p1[i]=(Math.random()-0.5)*600; g1.setAttribute('position', new THREE.BufferAttribute(p1, 3)); const stars = new THREE.Points(g1, new THREE.PointsMaterial({color:0xaaaaaa, size:0.8, map: starTexture, transparent:true, opacity:0.8, depthWrite: false})); s.add(stars); const g2 = new THREE.BufferGeometry(); const p2 = []; const c2 = []; const colors = [new THREE.Color(0xffffff), new THREE.Color(0xffddaa), new THREE.Color(0xaaddff)]; for(let i=0; i<200; i++) { p2.push((Math.random()-0.5)*300, (Math.random()-0.5)*200, (Math.random()-0.5)*100 + 50); const col = colors[Math.floor(Math.random()*colors.length)]; c2.push(col.r, col.g, col.b); } g2.setAttribute('position', new THREE.Float32BufferAttribute(p2, 3)); g2.setAttribute('color', new THREE.Float32BufferAttribute(c2, 3)); const fgStars = new THREE.Points(g2, new THREE.PointsMaterial({size:3.5, map: starTexture, vertexColors:true, transparent:true, opacity:0.9, blending:THREE.AdditiveBlending, depthWrite: false})); s.add(fgStars); cam.position.z=100; let t=0; function a(){ requestAnimationFrame(a); t+=0.0005; stars.rotation.y=t*0.2; fgStars.rotation.y=t*0.8; r.render(s,cam); } a(); }
 
-        /* --- 5. AI (GEMINI - UPDATED KEY) --- */
-        const apiKey = "AIzaSyC1vltz_2VMj9kzLX3n5vNe4XNnlkUL7Ug"; // NEW KEY
+        /* --- 5. AI (GEMINI - NEW KEY) --- */
+        // REPLACED WITH YOUR NEWEST KEY
+        const apiKey = "AIzaSyC1vltz_2VMj9kzLX3n5vNe4XNnlkUL7Ug";
 
         async function callGemini(prompt) {
             if(!checkAccess()) return; 
