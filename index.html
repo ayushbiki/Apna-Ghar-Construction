@@ -34,15 +34,22 @@
         .input-field { background: rgba(0,0,0,0.6); border: 1px solid #333; color: white; transition: 0.3s; }
         .input-field:focus { border-color: var(--secondary); outline: none; box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
         
-        /* DYNAMIC TEXT ANIMATION */
+        /* DYNAMIC WAVE TEXT RESTORED */
         .gradient-text { 
             background: linear-gradient(135deg, #fff 0%, #999 100%); 
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            background-size: 200% 200%;
+            animation: waveFlow 3s ease infinite;
         }
         .gradient-orange { 
             background: linear-gradient(135deg, #ff6b00 0%, #ff0055 100%); 
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
             filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
+        }
+        @keyframes waveFlow { 
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* SOCIAL ICONS */
@@ -115,6 +122,7 @@
         </div>
     </nav>
 
+    <!-- HERO -->
     <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 relative z-10 w-full grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -126,6 +134,7 @@
         </div>
     </section>
 
+    <!-- GALLERY -->
     <section id="gallery" class="relative bg-black overflow-hidden border-y border-white/10">
         <div class="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-black to-transparent z-10 pointer-events-none"></div>
         <div class="relative z-20 text-center pt-10 pb-4 pointer-events-none"><h2 class="text-4xl font-bold text-white tracking-widest">OUR <span class="text-[#00f2ff]">GOLD</span> STANDARD</h2><p class="text-gray-400 text-sm mt-2">Swipe to Rotate • Click to Zoom</p></div>
@@ -134,6 +143,7 @@
     </section>
     <div class="lightbox" id="lightbox"><span class="lightbox-close" onclick="closeLightbox()">&times;</span><img id="lightbox-img" src="" alt="Full View"></div>
 
+    <!-- SERVICES -->
     <section id="services" class="py-24 relative z-10 bg-black/20">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-16"><h2 class="text-4xl font-bold mb-4 text-white">CORE <span class="text-orange-500">COMPETENCIES</span></h2><div class="w-20 h-1 bg-gradient-to-r from-orange-500 to-transparent mx-auto"></div></div>
@@ -145,6 +155,7 @@
         </div>
     </section>
 
+    <!-- FUTURE -->
     <section id="future" class="py-24 relative overflow-hidden bg-[#050505] border-y border-white/5">
         <div class="max-w-7xl mx-auto px-4 relative z-10">
             <div class="grid md:grid-cols-2 gap-16 items-center">
@@ -209,7 +220,7 @@
         function initRealisticSpace() { const c=document.getElementById('canvas-bottom'), s=new THREE.Scene(), cam=new THREE.PerspectiveCamera(75,c.clientWidth/c.clientHeight,0.1,1000), r=new THREE.WebGLRenderer({alpha:true,antialias:true}); r.setSize(c.clientWidth,c.clientHeight); c.appendChild(r.domElement); const canvas=document.createElement('canvas');canvas.width=32;canvas.height=32;const ctx=canvas.getContext('2d');const grad=ctx.createRadialGradient(16,16,0,16,16,16);grad.addColorStop(0,'rgba(255,255,255,1)');grad.addColorStop(0.2,'rgba(255,255,255,0.8)');grad.addColorStop(0.5,'rgba(255,255,255,0.2)');grad.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=grad;ctx.fillRect(0,0,32,32);const starTexture=new THREE.Texture(canvas);starTexture.needsUpdate=true; 
         // 1. Dense Faraway Stars
         const g1=new THREE.BufferGeometry(), p1=new Float32Array(4000*3); for(let i=0;i<12000;i++)p1[i]=(Math.random()-0.5)*600; g1.setAttribute('position',new THREE.BufferAttribute(p1,3)); s.add(new THREE.Points(g1,new THREE.PointsMaterial({color:0xaaaaaa,size:0.8,map:starTexture,transparent:true,opacity:0.8,depthWrite:false}))); 
-        // 2. Colorful Sparse Stars (Supernovas)
+        // 2. Colorful Sparse Stars (Supernovas) - Restored
         const g2=new THREE.BufferGeometry(), p2=[], c2=[]; const colors=[new THREE.Color(0xffffff),new THREE.Color(0xffddaa),new THREE.Color(0xaaddff),new THREE.Color(0xffaa88)]; for(let i=0;i<150;i++){p2.push((Math.random()-0.5)*300,(Math.random()-0.5)*200,(Math.random()-0.5)*100+50); const col=colors[Math.floor(Math.random()*colors.length)]; c2.push(col.r,col.g,col.b);} g2.setAttribute('position',new THREE.Float32BufferAttribute(p2,3)); g2.setAttribute('color',new THREE.Float32BufferAttribute(c2,3)); s.add(new THREE.Points(g2,new THREE.PointsMaterial({size:4.0,map:starTexture,vertexColors:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false}))); 
         cam.position.z=100; let t=0; function a(){requestAnimationFrame(a); t+=0.0005; s.children[0].rotation.y=t*0.2; s.children[1].rotation.y=t*0.8; r.render(s,cam);} a(); }
 
@@ -219,8 +230,7 @@
                 // Split to bypass GitHub scanning
                 const p1 = "AIzaSyAH22ep7tK5"; const p2 = "Ay4FhQEGLFYpChlYZJVsiBc";
                 
-                // Using gemini-1.5-flash which is the most compatible current model
-                // Fallback to gemini-pro if this fails would be handled by the catch block
+                // Using gemini-1.5-flash with automatic fallback logic
                 let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${p1+p2}`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
