@@ -275,41 +275,37 @@
         const userKey = k1 + k2;
 
         async function callGemini(prompt) {
-            // Logic: If running in preview, envKey exists -> Use 2.5 Flash.
-            // If running in Incognito/Local, envKey is empty -> Fallback to userKey -> Use 1.5 Flash (Stable)
+            // Priority: Env Key -> User Key
             
             let activeKey = envKey;
-            let modelVersion = "gemini-2.5-flash-preview-09-2025";
+            let modelVersion = "gemini-2.5-flash-preview-09-2025"; // Only for envKey
 
             if (!activeKey) {
                 activeKey = userKey;
-                modelVersion = "gemini-1.5-flash"; // Use stable model for personal key
+                modelVersion = "gemini-1.5-flash"; // Use stable model for personal key to avoid 404
             }
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelVersion}:generateContent?key=${activeKey}`;
             
-            let delay = 1000;
-            for (let i = 0; i < 3; i++) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                    });
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
 
-                    if (!response.ok) {
-                        const errData = await response.json();
-                        throw new Error(errData.error?.message || `HTTP Error ${response.status}`);
-                    }
-
-                    const data = await response.json();
-                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "AI Response Error.";
-                } catch (e) {
-                    console.warn(`Attempt ${i+1} failed:`, e);
-                    if (i === 2) return "AI currently unavailable (Check Quota/Network).";
-                    await new Promise(r => setTimeout(r, delay));
-                    delay *= 2;
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    // throw detailed error
+                    throw new Error(data.error?.message || `API Error: ${response.status}`);
                 }
+
+                return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response text.";
+            } catch (e) {
+                console.error(e);
+                // Return the actual error message to the UI so we can debug
+                return `⚠️ Error: ${e.message}`; 
             }
         }
 
