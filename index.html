@@ -146,7 +146,6 @@
 
     <!-- SERVICES -->
     <section id="services" class="py-24 relative z-10 bg-black/20 overflow-hidden">
-        <!-- MIDDLE CANVAS: NEON BLUE WAVES -->
         <div id="canvas-middle"></div>
         
         <div class="max-w-7xl mx-auto px-4 relative z-10">
@@ -250,11 +249,11 @@
             cam.position.set(0, 10, 15); cam.lookAt(0,0,0);
             let t=0;
             function animate() {
-                requestAnimationFrame(animate); t += 0.015; // Relaxed Speed
+                requestAnimationFrame(animate); t += 0.015; // Slow, professional speed
                 const p = g.attributes.position.array;
                 for(let i=0; i<p.length; i+=3) {
-                    // 2x Amplitude (1.8) for elegant, dynamic wave
-                    p[i+1] = Math.sin(p[i]*0.2 + t) * 1.8 + Math.cos(p[i+2]*0.15 + t) * 1.8;
+                    // 2x Amplitude (2.5) & Moderate Frequency (0.2) for Clean Aesthetic
+                    p[i+1] = Math.sin(p[i]*0.2 + t) * 2.5 + Math.cos(p[i+2]*0.15 + t) * 2.5;
                 }
                 g.attributes.position.needsUpdate = true; r.render(s, cam);
             } animate();
