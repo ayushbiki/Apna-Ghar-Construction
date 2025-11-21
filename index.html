@@ -264,49 +264,50 @@
         const g2=new THREE.BufferGeometry(), p2=[], c2=[]; const colors=[new THREE.Color(0xffffff),new THREE.Color(0xffddaa),new THREE.Color(0xaaddff),new THREE.Color(0xffaa88)]; for(let i=0;i<150;i++){p2.push((Math.random()-0.5)*300,(Math.random()-0.5)*200,(Math.random()-0.5)*100+50); const col=colors[Math.floor(Math.random()*colors.length)]; c2.push(col.r,col.g,col.b);} g2.setAttribute('position',new THREE.Float32BufferAttribute(p2,3)); g2.setAttribute('color',new THREE.Float32BufferAttribute(c2,3)); s.add(new THREE.Points(g2,new THREE.PointsMaterial({size:4.0,map:starTexture,vertexColors:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false}))); 
         cam.position.z=100; let t=0; function a(){requestAnimationFrame(a); t+=0.0005; s.children[0].rotation.y=t*0.2; s.children[1].rotation.y=t*0.8; r.render(s,cam);} a(); }
 
-        /* --- 5. AI (HYBRID KEY SYSTEM - UPDATED) --- */
-        // 1. Environment Key (System injected)
+        /* --- 5. AI (SMART MODEL SWITCHER) --- */
         const envKey = ""; 
-
-        // 2. Your Personal Key (Updated)
-        // AIzaSyAaNdKfH7ogC2OrSdFH7t_rcztOxuaHo4k
         const k1 = "AIzaSyAaNdKfH7ogC2OrSdFH7t"; 
         const k2 = "_rcztOxuaHo4k";
         const userKey = k1 + k2;
 
+        // Try these models in order if one fails
+        const FALLBACK_MODELS = ["gemini-1.5-flash", "gemini-1.5-flash-001", "gemini-pro"];
+
         async function callGemini(prompt) {
-            // Priority: Env Key -> User Key
-            
             let activeKey = envKey;
-            let modelVersion = "gemini-2.5-flash-preview-09-2025"; // Only for envKey
+            let activeModels = ["gemini-2.5-flash-preview-09-2025"]; // Environment specific
 
             if (!activeKey) {
                 activeKey = userKey;
-                modelVersion = "gemini-1.5-flash"; // Use stable model for personal key to avoid 404
+                activeModels = FALLBACK_MODELS; // Use robust list for personal key
             }
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelVersion}:generateContent?key=${activeKey}`;
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
+            // Loop through models until one works
+            for (let model of activeModels) {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`;
+                try {
+                    console.log(`Attempting with model: ${model}`);
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    });
 
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    // throw detailed error
-                    throw new Error(data.error?.message || `API Error: ${response.status}`);
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        // Only log error, try next model
+                        console.warn(`Model ${model} failed:`, data.error?.message);
+                        continue; 
+                    }
+
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response text.";
+                } catch (e) {
+                    console.warn(`Network error on ${model}:`, e);
                 }
-
-                return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response text.";
-            } catch (e) {
-                console.error(e);
-                // Return the actual error message to the UI so we can debug
-                return `⚠️ Error: ${e.message}`; 
             }
+            
+            return "⚠️ AI Unavailable: All models failed. Check API Key restrictions.";
         }
 
         // AI Wrappers
