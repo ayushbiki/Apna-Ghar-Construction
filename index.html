@@ -27,6 +27,7 @@
         
         /* BACKGROUNDS */
         #canvas-top { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #111 0%, #000 100%); }
+        /* Middle Canvas has a solid background to cleanly separate sections */
         #canvas-middle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; background: #050505; }
         #canvas-bottom { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; background: transparent; }
 
@@ -146,6 +147,7 @@
 
     <!-- SERVICES -->
     <section id="services" class="py-24 relative z-10 bg-black/20 overflow-hidden">
+        <!-- MIDDLE CANVAS: NEON BLUE WAVES -->
         <div id="canvas-middle"></div>
         
         <div class="max-w-7xl mx-auto px-4 relative z-10">
@@ -249,11 +251,11 @@
             cam.position.set(0, 10, 15); cam.lookAt(0,0,0);
             let t=0;
             function animate() {
-                requestAnimationFrame(animate); t += 0.015; // Slow, professional speed
+                requestAnimationFrame(animate); t += 0.015; // Speed
                 const p = g.attributes.position.array;
                 for(let i=0; i<p.length; i+=3) {
-                    // 2x Amplitude (2.5) & Moderate Frequency (0.2) for Clean Aesthetic
-                    p[i+1] = Math.sin(p[i]*0.2 + t) * 2.5 + Math.cos(p[i+2]*0.15 + t) * 2.5;
+                    // 2x Amplitude (1.8) & Low Frequency (0.15) for Professional Ripples
+                    p[i+1] = Math.sin(p[i]*0.15 + t) * 1.8 + Math.cos(p[i+2]*0.12 + t) * 1.8;
                 }
                 g.attributes.position.needsUpdate = true; r.render(s, cam);
             } animate();
@@ -291,11 +293,13 @@
 
         /* --- 5. AI (EMBEDDED & PROTECTED KEY) --- */
         const envKey = ""; 
+        // Your Key Split: AIzaSyD8PuUrkmZGA1G6UI-udf7-ORgOfzishF0
         const pA = "AIzaSyD8PuUrkmZG";
         const pB = "A1G6UI-udf7-ORgO";
         const pC = "fzishF0";
         const userKey = pA + pB + pC;
 
+        // Auto-healing models
         const MODELS = ["gemini-1.5-flash", "gemini-1.5-flash-001", "gemini-pro"];
 
         async function callGemini(prompt) {
@@ -323,5 +327,3 @@
     </script>
 </body>
 </html>
-
-
