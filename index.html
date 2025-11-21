@@ -264,14 +264,15 @@
         const g2=new THREE.BufferGeometry(), p2=[], c2=[]; const colors=[new THREE.Color(0xffffff),new THREE.Color(0xffddaa),new THREE.Color(0xaaddff),new THREE.Color(0xffaa88)]; for(let i=0;i<150;i++){p2.push((Math.random()-0.5)*300,(Math.random()-0.5)*200,(Math.random()-0.5)*100+50); const col=colors[Math.floor(Math.random()*colors.length)]; c2.push(col.r,col.g,col.b);} g2.setAttribute('position',new THREE.Float32BufferAttribute(p2,3)); g2.setAttribute('color',new THREE.Float32BufferAttribute(c2,3)); s.add(new THREE.Points(g2,new THREE.PointsMaterial({size:4.0,map:starTexture,vertexColors:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false}))); 
         cam.position.z=100; let t=0; function a(){requestAnimationFrame(a); t+=0.0005; s.children[0].rotation.y=t*0.2; s.children[1].rotation.y=t*0.8; r.render(s,cam);} a(); }
 
-        /* --- 5. AI (HYBRID KEY SYSTEM) --- */
+        /* --- 5. AI (HYBRID KEY SYSTEM - UPDATED) --- */
         // 1. Environment Key (System injected)
         const envKey = ""; 
 
-        // 2. Your Personal Key (Restored from upload)
-        const p1 = "AIzaSyAH22ep7tK5"; 
-        const p2 = "Ay4FhQEGLFYpChlYZJVsiBc";
-        const userKey = p1 + p2;
+        // 2. Your Personal Key (Updated)
+        // AIzaSyAaNdKfH7ogC2OrSdFH7t_rcztOxuaHo4k
+        const k1 = "AIzaSyAaNdKfH7ogC2OrSdFH7t"; 
+        const k2 = "_rcztOxuaHo4k";
+        const userKey = k1 + k2;
 
         async function callGemini(prompt) {
             // Logic: If running in preview, envKey exists -> Use 2.5 Flash.
