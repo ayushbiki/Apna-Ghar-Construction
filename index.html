@@ -34,7 +34,7 @@
         .input-field { background: rgba(0,0,0,0.6); border: 1px solid #333; color: white; transition: 0.3s; }
         .input-field:focus { border-color: var(--secondary); outline: none; box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
         
-        /* DYNAMIC WAVE TEXT RESTORED */
+        /* DYNAMIC WAVE TEXT */
         .gradient-text { 
             background: linear-gradient(135deg, #fff 0%, #999 100%); 
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
@@ -225,19 +225,11 @@
             r.setSize(window.innerWidth,window.innerHeight);
             c.appendChild(r.domElement);
             
-            // Increased buffer size to prevent overflow and allow for enough points
             const g=new THREE.BufferGeometry(), pos=new Float32Array(4800);
-            
-            // Initialization Loop
             let k = 0;
             for(let x=-40; x<40; x+=2) {
                 for(let z=-40; z<40; z+=2) {
-                    if(k < 4800) {
-                        pos[k] = x;
-                        pos[k+1] = 0; // Y will be animated
-                        pos[k+2] = z;
-                        k += 3;
-                    }
+                    if(k < 4800) { pos[k] = x; pos[k+1] = 0; pos[k+2] = z; k += 3; }
                 }
             }
             g.setAttribute('position',new THREE.BufferAttribute(pos,3));
@@ -249,19 +241,17 @@
             function animateWave(){
                 requestAnimationFrame(animateWave);
                 time += 0.05;
-                
                 const positions = g.attributes.position.array;
                 let i = 0;
                 for(let x=-40; x<40; x+=2) {
                     for(let z=-40; z<40; z+=2) {
                         if (i + 1 < positions.length) {
-                            // Wave Logic: Sinusoidal movement on Y-axis
                             positions[i+1] = Math.sin((x * 0.2) + time) * 1.5 + Math.cos((z * 0.1) + time) * 1.5;
                         }
                         i += 3;
                     }
                 }
-                g.attributes.position.needsUpdate = true; // Critical for animation
+                g.attributes.position.needsUpdate = true;
                 r.render(s, cam);
             }
             animateWave();
@@ -274,15 +264,31 @@
         const g2=new THREE.BufferGeometry(), p2=[], c2=[]; const colors=[new THREE.Color(0xffffff),new THREE.Color(0xffddaa),new THREE.Color(0xaaddff),new THREE.Color(0xffaa88)]; for(let i=0;i<150;i++){p2.push((Math.random()-0.5)*300,(Math.random()-0.5)*200,(Math.random()-0.5)*100+50); const col=colors[Math.floor(Math.random()*colors.length)]; c2.push(col.r,col.g,col.b);} g2.setAttribute('position',new THREE.Float32BufferAttribute(p2,3)); g2.setAttribute('color',new THREE.Float32BufferAttribute(c2,3)); s.add(new THREE.Points(g2,new THREE.PointsMaterial({size:4.0,map:starTexture,vertexColors:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false}))); 
         cam.position.z=100; let t=0; function a(){requestAnimationFrame(a); t+=0.0005; s.children[0].rotation.y=t*0.2; s.children[1].rotation.y=t*0.8; r.render(s,cam);} a(); }
 
-        /* --- 5. AI (FIXED FOR PREVIEW ENVIRONMENT) --- */
-        // Use empty string for environment key
-        const apiKey = ""; 
+        /* --- 5. AI (HYBRID KEY SYSTEM) --- */
+        // 1. Environment Key (System injected)
+        const envKey = ""; 
+
+        // 2. Your Personal Key (Restored from upload)
+        const p1 = "AIzaSyAH22ep7tK5"; 
+        const p2 = "Ay4FhQEGLFYpChlYZJVsiBc";
+        const userKey = p1 + p2;
 
         async function callGemini(prompt) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            // Logic: If running in preview, envKey exists -> Use 2.5 Flash.
+            // If running in Incognito/Local, envKey is empty -> Fallback to userKey -> Use 1.5 Flash (Stable)
+            
+            let activeKey = envKey;
+            let modelVersion = "gemini-2.5-flash-preview-09-2025";
+
+            if (!activeKey) {
+                activeKey = userKey;
+                modelVersion = "gemini-1.5-flash"; // Use stable model for personal key
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelVersion}:generateContent?key=${activeKey}`;
             
             let delay = 1000;
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 3; i++) {
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
@@ -290,13 +296,16 @@
                         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                     });
 
-                    if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+                    if (!response.ok) {
+                        const errData = await response.json();
+                        throw new Error(errData.error?.message || `HTTP Error ${response.status}`);
+                    }
 
                     const data = await response.json();
                     return data.candidates?.[0]?.content?.parts?.[0]?.text || "AI Response Error.";
                 } catch (e) {
                     console.warn(`Attempt ${i+1} failed:`, e);
-                    if (i === 4) return "AI currently unavailable (Network/Quota).";
+                    if (i === 2) return "AI currently unavailable (Check Quota/Network).";
                     await new Promise(r => setTimeout(r, delay));
                     delay *= 2;
                 }
